@@ -1,0 +1,12 @@
+ERROR: Unable to fetch personal Advent of Code input for Day 01.
+
+Reason: Missing AOC_SESSION cookie/token required to authenticate with adventofcode.com.
+
+To resolve this issue:
+1. Ensure the AOC_SESSION environment variable is set with your Advent of Code session cookie
+2. Or ensure the AOC_SESSION secret is available through the Paperclip secrets API
+3. The session cookie can be obtained by logging into adventofcode.com and checking the session cookie in your browser's developer tools
+
+Without a valid session, the input cannot be fetched as puzzle inputs are personal to each user.
+
+Problem text has been successfully fetched and saved to problems/Day01Problem.txt
