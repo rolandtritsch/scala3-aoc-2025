@@ -46,6 +46,8 @@ import com.typesafe.scalalogging.Logger
   * The dial is rotated R14 to point at 14.
   * The dial is rotated L82 to point at 32.
   * Because the dial points at 0 a total of three times during this process, the password in this example is 3.
+  *
+  * The answer to part 1 for the full input is 261.
   */
 object Day01:
   val logger: Logger = Logger(this.getClass.getName)
