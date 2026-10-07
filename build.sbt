@@ -4,7 +4,8 @@
 ThisBuild / scalaVersion := "3.9.0"
 
 // Required by sbt-scalafix semantic rules (see .scalafix.conf).
-ThisBuild / semanticdbEnabled := false
+ThisBuild / semanticdbEnabled := true
+ThisBuild / scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "0.6.30"
 
 lazy val root = (project in file(".")).settings(
   name := "scala3-aoc-2025",
