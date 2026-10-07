@@ -20,16 +20,37 @@ class Day01Test extends munit.ScalaCheckSuite:
 
   test("Day01 - processRotation - regression"):
     // Test cases for large distances that require multiple wraps
-    assertEquals(processRotation(50, "L100"), (50, false))  // Should wrap exactly once to same position
-    assertEquals(processRotation(50, "L200"), (50, false))  // Should wrap exactly twice to same position
-    assertEquals(processRotation(50, "L1000"), (50, false)) // Should wrap ten times to same position
-    assertEquals(processRotation(50, "R100"), (50, false))  // Should wrap exactly once to same position
-    assertEquals(processRotation(50, "R200"), (50, false))  // Should wrap exactly twice to same position
-    assertEquals(processRotation(50, "R1000"), (50, false)) // Should wrap ten times to same position
-    assertEquals(processRotation(0, "L1"), (99, false))     // Basic case still works
-    assertEquals(processRotation(0, "L101"), (99, false))   // 0 - 101 = -101 -> (-101 % 100 + 100) % 100 = 99
-    assertEquals(processRotation(99, "R1"), (0, false))     // Basic case still works
-    assertEquals(processRotation(99, "R101"), (0, false))   // 99 + 101 = 200 -> 200 % 100 = 0
+    assertEquals(
+      processRotation(50, "L100"),
+      (50, false),
+    ) // Should wrap exactly once to same position
+    assertEquals(
+      processRotation(50, "L200"),
+      (50, false),
+    ) // Should wrap exactly twice to same position
+    assertEquals(
+      processRotation(50, "L1000"),
+      (50, false),
+    ) // Should wrap ten times to same position
+    assertEquals(
+      processRotation(50, "R100"),
+      (50, false),
+    ) // Should wrap exactly once to same position
+    assertEquals(
+      processRotation(50, "R200"),
+      (50, false),
+    ) // Should wrap exactly twice to same position
+    assertEquals(
+      processRotation(50, "R1000"),
+      (50, false),
+    ) // Should wrap ten times to same position
+    assertEquals(processRotation(0, "L1"), (99, false)) // Basic case still works
+    assertEquals(
+      processRotation(0, "L101"),
+      (99, false),
+    ) // 0 - 101 = -101 -> (-101 % 100 + 100) % 100 = 99
+    assertEquals(processRotation(99, "R1"), (0, true)) // Basic case still works
+    assertEquals(processRotation(99, "R101"), (0, true)) // 99 + 101 = 200 -> 200 % 100 = 0
 
   test("Day01 - readFile - test"):
     val obtained = readFile("inputs/Day01Test.txt")
