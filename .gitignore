@@ -1,0 +1,10 @@
+target/
+project/target/
+project/project/
+.scala-build/
+.bloop/
+.bsp/
+.metals/
+.vscode/
+.claude/
+.devcontainer

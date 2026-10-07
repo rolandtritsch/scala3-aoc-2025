@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  run:
+    name: Build, Test, Deploy
+    strategy:
+      matrix:
+        java-version: [25]
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
+
+      - uses: coursier/cache-action@v6
+
+      - name: Check formatting
+        run: sbt scalafmtCheckAll
+
+      - name: Run all tests
+        run: sbt coverage test coverageReport
+
+      - name: Generate html docs
+        run: sbt doc
+
+      - name: Configure pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v5
+
+      - name: Upload pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./target/scala-3.9.0/api"
+
+      - name: Deploy pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/deploy-pages@v4

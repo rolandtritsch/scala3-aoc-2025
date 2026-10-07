@@ -1,0 +1,5 @@
+#! /bin/bash
+set -e # exit on failure
+
+sbt scalafmtAll && [[ -z $(git status --porcelain) ]]
+sbt scalafixAll && [[ -z $(git status --porcelain) ]]
