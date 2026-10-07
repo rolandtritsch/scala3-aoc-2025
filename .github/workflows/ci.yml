@@ -41,7 +41,7 @@ jobs:
         run: sbt scalafmtCheckAll
 
       - name: Run all tests
-        run: sbt coverage test coverageReport
+        run: sbt "coverage; test; coverageReport"
 
       - name: Generate html docs
         run: sbt doc
@@ -54,7 +54,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./target/scala-3.9.0/api"
+          path: "./target/out/jvm/scala-3.9.0/scala3-aoc-2025/api"
 
       - name: Deploy pages
         if: github.ref == 'refs/heads/main'

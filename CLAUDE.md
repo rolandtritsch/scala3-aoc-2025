@@ -93,7 +93,7 @@ Tests are structured with:
 - Separate test data files (`src/main/resources/inputs/`) to isolate test inputs from production code
 - One test class per day for organization
 - `Test / fork := true` with `-Xss1G -Xmx10G` for stack-hungry puzzles
-- Target of 80% code coverage (via `sbt coverage test coverageReport`) to balance thoroughness with pragmatism
+- Target of 80% code coverage (via `sbt "coverage; test; coverageReport"`) to balance thoroughness with pragmatism
 
 ### Code Style Decisions
 

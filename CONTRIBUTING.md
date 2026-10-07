@@ -75,7 +75,7 @@ git commit -m "Add Grid utility tests"
 sbt test
 
 # Check coverage
-sbt coverage test coverageReport
+sbt "coverage; test; coverageReport"
 ```
 
 **Follow code style**: The pre-push hook will enforce formatting, but you can run checks manually:
@@ -151,7 +151,7 @@ sbt test
 sbt "testOnly aoc2025.Day01Test"
 
 # Run with coverage
-sbt coverage test coverageReport
+sbt "coverage; test; coverageReport"
 # View report at target/scala-3.9.0/scoverage-report/index.html
 ```
 
@@ -183,7 +183,7 @@ sbt run               # Run all solutions
 # Code quality
 sbt scalafmtAll       # Format code
 sbt scalafixAll       # Run linter
-sbt coverage test coverageReport  # Generate coverage report
+sbt "coverage; test; coverageReport"  # Generate coverage report
 
 # Git workflow
 git checkout -b roland/<ticket-id>/<3-word-description>
