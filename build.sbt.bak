@@ -33,5 +33,6 @@ lazy val root = (project in file(".")).settings(
   // Test / testOptions += Tests.Argument("+l", "--exclude-tags=slow"),
   scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "0.6.30",
 )
-
-Test / testOptions += Tests.Argument("-l", "--exclude-tags=ignore")
+Test / testOptions += Tests.Argument("-x", "ignore")
+import sbt.Tests
+Test / testOptions += Tests.Argument("-x", "ignore")
