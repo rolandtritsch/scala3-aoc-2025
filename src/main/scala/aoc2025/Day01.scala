@@ -110,5 +110,5 @@ object Day01:
   end part1
 
   // TODO: Implement part 2
-  def part2(rotations: Seq[String]): Int = ???
+  def part2(rotations: Seq[String]): Int = 0
 end Day01
