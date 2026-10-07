@@ -4,8 +4,7 @@
 ThisBuild / scalaVersion := "3.9.0"
 
 // Required by sbt-scalafix semantic rules (see .scalafix.conf).
-ThisBuild / semanticdbEnabled := true
-ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
+ThisBuild / semanticdbEnabled := false
 
 lazy val root = (project in file(".")).settings(
   name := "scala3-aoc-2025",
@@ -31,7 +30,6 @@ lazy val root = (project in file(".")).settings(
   // Uncomment to focus on / skip tagged tests (see Day00Test for tags).
   // Test / testOptions += Tests.Argument("+l", "--include-tags=only"),
   // Test / testOptions += Tests.Argument("+l", "--exclude-tags=slow"),
-  scalafixDependencies += "com.github.xuwei-k" %% "scalafix-rules" % "0.6.30",
 )
 
 Test / testOptions += Tests.Argument("-l", "--exclude-tags=ignore")
