@@ -14,7 +14,9 @@ class Day04Test extends munit.ScalaCheckSuite:
   test("Day04 - readFile"):
     val obtained = readFile("inputs/Day04.txt")
     assertEquals(obtained.size, 138)
-    assert(obtained.forall(row => row.length == obtained.head.length && row.forall(cell => cell == '@' || cell == '.')))
+    assert(obtained.forall(row =>
+      row.length == obtained.head.length && row.forall(cell => cell == '@' || cell == '.')
+    ))
 
   test("Day04 - part1 - test"):
     val input = readFile("inputs/Day04Test.txt")

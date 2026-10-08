@@ -43,24 +43,26 @@ object Day04:
     require(diagram.nonEmpty, "diagram.nonEmpty")
     require(diagram.head.nonEmpty, "diagram rows are nonempty")
     require(diagram.forall(_.length == diagram.head.length), "diagram is rectangular")
-    require(diagram.forall(_.forall(cell => cell == '@' || cell == '.')), "diagram contains only '@' and '.'")
+    require(
+      diagram.forall(_.forall(cell => cell == '@' || cell == '.')),
+      "diagram contains only '@' and '.'",
+    )
     logger.debug(s"diagram: ${diagram.size}x${diagram.head.length}")
 
     val height = diagram.length
     val width = diagram.head.length
 
-    diagram.indices.iterator
-      .flatMap: row =>
-        diagram(row).indices.iterator.collect:
-          case col if diagram(row)(col) == '@' =>
-            val adjacentRolls = (for
-              neighborRow <- row - 1 to row + 1
-              neighborCol <- col - 1 to col + 1
-              if (neighborRow != row || neighborCol != col) &&
-                neighborRow >= 0 && neighborRow < height && neighborCol >= 0 && neighborCol < width
-            yield if diagram(neighborRow)(neighborCol) == '@' then 1 else 0).sum
-            adjacentRolls
-      .count(_ < 4)
+    diagram.indices.iterator.flatMap: row =>
+      diagram(row).indices.iterator.collect:
+        case col if diagram(row)(col) == '@' =>
+          val adjacentRolls = (for
+            neighborRow <- row - 1 to row + 1
+            neighborCol <- col - 1 to col + 1
+            if (neighborRow != row || neighborCol != col) && neighborRow >= 0 &&
+              neighborRow < height && neighborCol >= 0 && neighborCol < width
+          yield if diagram(neighborRow)(neighborCol) == '@' then 1 else 0).sum
+          adjacentRolls
+    .count(_ < 4)
   end part1
 
   /** Part 2 is outside the scope of the current implementation.
