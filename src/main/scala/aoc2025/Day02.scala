@@ -25,20 +25,23 @@ object Day02:
     logger.debug(s"filename: ${filename}")
 
     val source = Source.fromResource(filename)
-    try
-      source.getLines().flatMap(_.trim.split(",")).map: range =>
+    try source.getLines().flatMap(_.trim.split(",")).map: range =>
         val bounds = range.split("-", 2).map(BigInt(_))
-        require(bounds.length == 2 && bounds(0) >= 1 && bounds(0) <= bounds(1), s"Invalid range: ${range}")
+        require(
+          bounds.length == 2 && bounds(0) >= 1 && bounds(0) <= bounds(1),
+          s"Invalid range: ${range}",
+        )
         (bounds(0), bounds(1))
       .toSeq
     finally source.close()
+    end try
   end readFile
 
   /** Sums all invalid IDs in the inclusive ranges.
     *
-    * For a repeated sequence of width `w`, the ID is `prefix * (10^w + 1)`. Intersecting the
-    * prefix bounds with each range lets the solver sum candidates arithmetically instead of
-    * inspecting every ID.
+    * For a repeated sequence of width `w`, the ID is `prefix * (10^w + 1)`. Intersecting the prefix
+    * bounds with each range lets the solver sum candidates arithmetically instead of inspecting
+    * every ID.
     *
     * @param ranges
     *   inclusive lower and upper product ID bounds
@@ -89,6 +92,7 @@ object Day02:
         val count = maxPrefix - minPrefix + 1
         val prefixSum = count * (minPrefix + maxPrefix) / 2
         sum + prefixSum * repeatedScale
+      end if
   end invalidIdSum
 
 end Day02
