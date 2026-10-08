@@ -4,8 +4,8 @@ import com.typesafe.scalalogging.Logger
 
 /** Day02 identifies product IDs made of a digit sequence repeated exactly twice.
   *
-  * For each even digit length, part 1 generates the repeated values directly
-  * and sums those that fall inside the inclusive input ranges.
+  * For each even digit length, part 1 generates the repeated values directly and sums those that
+  * fall inside the inclusive input ranges.
   */
 object Day02:
   val logger: Logger = Logger(this.getClass.getName)
@@ -24,20 +24,20 @@ object Day02:
     logger.debug(s"filename: ${filename}")
 
     val source = Source.fromResource(filename)
-    try
-      source.getLines().mkString.trim.split(",").toSeq.map: range =>
+    try source.getLines().mkString.trim.split(",").toSeq.map: range =>
         val Array(start, end) = range.split("-"): @unchecked
         val parsedRange = (start.toLong, end.toLong)
         require(parsedRange._1 > 0 && parsedRange._1 <= parsedRange._2, "valid inclusive range")
         parsedRange
     finally source.close()
+    end try
   end readFile
 
   /** Sums IDs in the given ranges whose decimal digits form two identical halves.
     *
-    * For a half-length of `n`, every candidate is `prefix * (10^n + 1)`.
-    * Prefix bounds are derived from each input range so the method checks only
-    * candidates that could be included, rather than scanning every ID.
+    * For a half-length of `n`, every candidate is `prefix * (10^n + 1)`. Prefix bounds are derived
+    * from each input range so the method checks only candidates that could be included, rather than
+    * scanning every ID.
     *
     * @param ranges
     *   inclusive positive product ID ranges
