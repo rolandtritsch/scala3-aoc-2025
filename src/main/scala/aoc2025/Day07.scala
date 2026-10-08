@@ -32,8 +32,9 @@ object Day07:
   /** Counts every splitter reached by at least one beam.
     *
     * The active beam positions are represented as a set for each row, so beams arriving at the same
-    * column merge before reaching the next row. A splitter replaces its incoming beam with positions
-    * one column to either side; positions beyond the manifold edge have exited and are discarded.
+    * column merge before reaching the next row. A splitter replaces its incoming beam with
+    * positions one column to either side; positions beyond the manifold edge have exited and are
+    * discarded.
     *
     * @param manifold
     *   the rectangular manifold containing one `S` and otherwise `.` or `^`

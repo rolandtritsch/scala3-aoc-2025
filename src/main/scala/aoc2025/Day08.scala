@@ -36,8 +36,7 @@ object Day08:
     logger.debug(s"filename: ${filename}")
 
     val source = Source.fromResource(filename)
-    try
-      source.getLines().map: line =>
+    try source.getLines().map: line =>
         val coordinates = line.split(",").map(_.toInt)
         require(coordinates.length == 3, s"expected three coordinates: ${line}")
         JunctionBox(coordinates(0), coordinates(1), coordinates(2))
@@ -49,9 +48,9 @@ object Day08:
   /** Multiplies the sizes of the three largest circuits after connecting the closest pairs.
     *
     * The algorithm generates each unordered pair once, orders pairs by squared distance, and
-    * applies exactly `connectionCount` connections, including pairs whose endpoints are already
-    * in the same circuit. The final component sizes are sorted descending and the largest three
-    * are multiplied.
+    * applies exactly `connectionCount` connections, including pairs whose endpoints are already in
+    * the same circuit. The final component sizes are sorted descending and the largest three are
+    * multiplied.
     *
     * @param boxes
     *   the junction-box coordinates
@@ -67,10 +66,11 @@ object Day08:
     require(connectionCount <= possiblePairCount, "connectionCount exceeds the number of pairs")
     logger.debug(s"junction boxes: ${boxes.size}, connections: ${connectionCount}")
 
-    val pairs = for
-      first <- boxes.indices
-      second <- first + 1 until boxes.size
-    yield (squaredDistance(boxes(first), boxes(second)), first, second)
+    val pairs =
+      for
+        first <- boxes.indices
+        second <- first + 1 until boxes.size
+      yield (squaredDistance(boxes(first), boxes(second)), first, second)
 
     val circuits = new DisjointSet(boxes.size)
     pairs.sortBy(_._1).take(connectionCount).foreach: (_, first, second) =>
@@ -131,12 +131,14 @@ object Day08:
           else (secondRoot, firstRoot)
         parents(smallerRoot) = largerRoot
         sizes(largerRoot) += sizes(smallerRoot)
+      end if
     end union
 
     /** Returns sizes of all disjoint components. */
-    def componentSizes: Seq[Int] =
-      parents.indices.filter(node => find(node) == node).map(sizes).toVector
+    def componentSizes: Seq[Int] = parents.indices.filter(node => find(node) == node).map(sizes)
+      .toVector
     end componentSizes
+
   end DisjointSet
 
   /** Part 2 is outside the scope of the current implementation.
