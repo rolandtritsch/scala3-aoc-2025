@@ -5,15 +5,11 @@ This documents how to reset the demo to its starting state so the
 with **Day 01**: the ProblemGatherer fetches the Day 01 problem + input,
 then solver → submitter take it from there.
 
-Last verified end-to-end: 2026-10-07 (reset executed, CTO heartbeat run
-succeeded, `AOCA-4 "Fetch day 01 problem and input"` created, ProblemGatherer
-run active, `Day01.txt` re-appearing in the repo).
-
 ## What "reset" means
 
 1. `scala3-aoc-2025` repo contains only **Day00** (template) again.
 2. Paperclip (local docker container) is up and healthy.
-3. `AOC_SESSION` secret holds a **fresh** Advent of Code session cookie.
+3. `AOC_SESSION` secret holds a **working** Advent of Code session cookie (might need to be refreshed).
 4. The CTO heartbeat is **enabled**.
 5. The board has **no leftover Day01 issues**, so the CTO starts at Day 01.
 6. The CTO is kicked once; the ProblemGatherer picks up Day 01.
@@ -90,7 +86,11 @@ git commit -m "Reset demo: remove Day01, keep Day00 template"
 > than the local bind mount (they use the bind mount by default — see
 > Step 3 — so pushing is optional).
 
-## Step 2 — Get a new AOC_SESSION key and rotate it
+## Step 2 — Get a new AOC_SESSION key and rotate it (if necessary)
+
+This is an optional step. It is only needed, if/when the currect session
+cookie has expired. Check first. Just curl adventofcode.com and check,
+if 'Roland Tritsch' is still logged in.
 
 Advent of Code has no API; the gatherer/submitter authenticate with the
 user's login session cookie (see `aoc-gather` / `aoc-submit` skills).
