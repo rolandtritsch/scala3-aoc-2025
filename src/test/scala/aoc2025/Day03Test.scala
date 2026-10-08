@@ -7,12 +7,18 @@ class Day03Test extends munit.ScalaCheckSuite:
 
   test("Day03 - readFile - test"):
     val obtained = readFile("inputs/Day03Test.txt")
-    assertEquals(obtained, Seq("987654321111111", "811111111111119", "234234234234278", "818181911112111"))
+    assertEquals(
+      obtained,
+      Seq("987654321111111", "811111111111119", "234234234234278", "818181911112111"),
+    )
 
   test("Day03 - readFile"):
     val obtained = readFile("inputs/Day03.txt")
     assertEquals(obtained.size, 200)
-    assert(obtained.forall(bank => bank.length >= 2 && bank.forall(digit => digit >= '1' && digit <= '9')))
+    assert(
+      obtained
+        .forall(bank => bank.length >= 2 && bank.forall(digit => digit >= '1' && digit <= '9'))
+    )
 
   test("Day03 - part1 - test"):
     val input = readFile("inputs/Day03Test.txt")

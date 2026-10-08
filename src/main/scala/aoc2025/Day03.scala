@@ -45,7 +45,10 @@ object Day03:
 
     banks.foldLeft(0L): (total, bank) =>
       require(bank.length >= 2, "bank.length >= 2")
-      require(bank.forall(digit => digit >= '1' && digit <= '9'), "bank contains ratings from 1 through 9")
+      require(
+        bank.forall(digit => digit >= '1' && digit <= '9'),
+        "bank contains ratings from 1 through 9",
+      )
 
       val joltage = (0 until (bank.length - 1)).foldLeft(0): (maximum, tensIndex) =>
         val tens = bank(tensIndex) - '0'
