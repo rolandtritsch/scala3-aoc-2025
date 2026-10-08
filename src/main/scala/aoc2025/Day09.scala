@@ -5,8 +5,8 @@ import com.typesafe.scalalogging.Logger
 /** Day09 - find the largest axis-aligned rectangle with red tiles at opposite corners.
   *
   * Every pair of red-tile coordinates defines a candidate. Since grid coordinates identify tiles,
-  * each rectangle dimension includes both endpoint tiles, so a coordinate difference of d yields
-  * a side length of d + 1. Checking every pair takes O(n²) time.
+  * each rectangle dimension includes both endpoint tiles, so a coordinate difference of d yields a
+  * side length of d + 1. Checking every pair takes O(n²) time.
   */
 object Day09:
   val logger: Logger = Logger(this.getClass.getName)
