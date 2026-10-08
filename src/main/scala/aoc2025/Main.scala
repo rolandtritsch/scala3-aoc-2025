@@ -31,4 +31,8 @@ def solve() =
   println(s"Day06 - part1: ${Day06.part1(input06)}")
   println(s"Day06 - part2: ${Day06.part2(input06)}")
 
+  val input07 = Day07.readFile("inputs/Day07.txt")
+  println(s"Day07 - part1: ${Day07.part1(input07)}")
+  println(s"Day07 - part2: ${Day07.part2(input07)}")
+
 end solve

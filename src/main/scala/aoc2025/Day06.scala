@@ -60,13 +60,16 @@ object Day06:
     val columnBlocks = activeColumns.foldLeft(Vector.empty[(Int, Int)]): (blocks, column) =>
       blocks.lastOption match
         case Some((start, end)) if end == column => blocks.init :+ (start, column + 1)
-        case _ => blocks :+ (column, column + 1)
+        case _                                   => blocks :+ (column, column + 1)
 
     val problems = columnBlocks.map: (start, end) =>
       val operandRows = paddedLines.dropRight(1).map(_.slice(start, end).trim).filter(_.nonEmpty)
       val operatorText = paddedLines.last.slice(start, end).trim
       require(operandRows.nonEmpty, s"problem at columns ${start}-${end} has no operands")
-      require(operatorText.length == 1, s"problem at columns ${start}-${end} must have one operator")
+      require(
+        operatorText.length == 1,
+        s"problem at columns ${start}-${end} must have one operator",
+      )
       val operator = operatorText.head
       require(operator == '+' || operator == '*', s"invalid worksheet operator: ${operator}")
       WorksheetProblem(operandRows.map(BigInt(_)), operator)
@@ -92,9 +95,10 @@ object Day06:
     problems.foldLeft(BigInt(0)): (total, problem) =>
       require(problem.numbers.nonEmpty, "problem.numbers.nonEmpty")
       val result = problem.operator match
-        case '+' => problem.numbers.sum
-        case '*' => problem.numbers.product
-        case operator => throw new IllegalArgumentException(s"invalid worksheet operator: ${operator}")
+        case '+'      => problem.numbers.sum
+        case '*'      => problem.numbers.product
+        case operator =>
+          throw new IllegalArgumentException(s"invalid worksheet operator: ${operator}")
       total + result
   end part1
 
