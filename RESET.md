@@ -128,6 +128,23 @@ docker start docker-paperclip-1
 curl -sf http://localhost:3100/api/health   # expect {"status":"ok",...}
 ```
 
+Verify the Scala toolchain the solver needs is present (asdf installs live
+on the `/paperclip` volume; the image only wires the shims onto `PATH`):
+
+```bash
+docker exec docker-paperclip-1 sh -c \
+  'cd /workspaces/scala3-aoc-2025 && java -version 2>&1 | head -1 && sbt --version 2>&1 | tail -1'
+# expect: openjdk version "25" ... + an sbt launcher line
+```
+
+If `java: not found` (fresh volume, or installs never ran), install once as
+the runtime user from the repo's `.tool-versions`:
+
+```bash
+docker exec -u node -e HOME=/paperclip -e ASDF_DATA_DIR=/paperclip/.asdf docker-paperclip-1 sh -c \
+  'export PATH="/paperclip/.asdf/bin:/paperclip/.asdf/shims:$PATH" && cd /workspaces/scala3-aoc-2025 && asdf install'
+```
+
 The container is configured with (see `docker inspect docker-paperclip-1`):
 
 - Image `docker-paperclip` (built from the `paperclip` repo), port `3100:3100`.
