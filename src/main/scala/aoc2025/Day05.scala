@@ -73,7 +73,9 @@ object Day05:
   def part1(database: IngredientDatabase): Int =
     require(database.freshRanges.nonEmpty, "database.freshRanges.nonEmpty")
     require(database.availableIds.nonEmpty, "database.availableIds.nonEmpty")
-    logger.debug(s"fresh ranges: ${database.freshRanges.size}, available IDs: ${database.availableIds.size}")
+    logger
+      .debug(s"fresh ranges: ${database.freshRanges.size}, available IDs: ${database.availableIds
+          .size}")
 
     database.availableIds.count: id =>
       database.freshRanges.exists: (lower, upper) =>
