@@ -28,8 +28,8 @@ object Day01:
     finally source.close()
   end readFile
 
-  /** Follows every rotation from position 50, wrapping around the 100-position dial, and counts
-    * how many rotations end with the dial at zero.
+  /** Follows every rotation from position 50, wrapping around the 100-position dial, and counts how
+    * many rotations end with the dial at zero.
     *
     * @param instructions
     *   left (`L`) and right (`R`) rotations, each followed by a non-negative distance
@@ -44,7 +44,8 @@ object Day01:
       val nextPosition = instruction match
         case Rotation("L", distance) => (position - distance.toInt % 100 + 100) % 100
         case Rotation("R", distance) => (position + distance.toInt % 100) % 100
-        case _ => throw new IllegalArgumentException(s"Invalid rotation instruction: ${instruction}")
+        case _                       =>
+          throw new IllegalArgumentException(s"Invalid rotation instruction: ${instruction}")
 
       (nextPosition, count + (if nextPosition == 0 then 1 else 0))
 
