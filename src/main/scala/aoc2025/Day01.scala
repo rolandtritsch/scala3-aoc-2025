@@ -4,8 +4,8 @@ import com.typesafe.scalalogging.Logger
 
 /** Day01 solves the safe-dial rotations from the input sequence.
   *
-  * The dial has positions from 0 through 99 and begins at 50. Part 1 counts
-  * how many rotations finish with the dial at position 0.
+  * The dial has positions from 0 through 99 and begins at 50. Part 1 counts how many rotations
+  * finish with the dial at position 0.
   */
 object Day01:
   val logger: Logger = Logger(this.getClass.getName)
@@ -31,14 +31,12 @@ object Day01:
 
   /** Applies every left or right rotation and counts those ending at zero.
     *
-    * The position is kept modulo 100 after each instruction, so distances
-    * larger than one full dial turn are handled without simulating individual
-    * clicks. Only the position after each complete rotation contributes to the
-    * count.
+    * The position is kept modulo 100 after each instruction, so distances larger than one full dial
+    * turn are handled without simulating individual clicks. Only the position after each complete
+    * rotation contributes to the count.
     *
     * @param rotations
-    *   instructions consisting of `L` or `R` followed by a non-negative
-    *   distance
+    *   instructions consisting of `L` or `R` followed by a non-negative distance
     * @return
     *   the number of rotations that end with the dial at zero
     */
