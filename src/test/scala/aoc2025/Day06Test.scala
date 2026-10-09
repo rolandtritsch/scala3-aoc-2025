@@ -6,12 +6,10 @@ class Day06Test extends munit.ScalaCheckSuite:
   val ignore = new munit.Tag("ignore")
 
   test("Day06 - readFile - sample"):
-    assertEquals(readFile("inputs/Day06Test.txt"), Vector(
-      "123 328  51 64 ",
-      " 45 64  387 23 ",
-      "  6 98  215 314",
-      "*   +   *   +  ",
-    ))
+    assertEquals(
+      readFile("inputs/Day06Test.txt"),
+      Vector("123 328  51 64 ", " 45 64  387 23 ", "  6 98  215 314", "*   +   *   +  "),
+    )
 
   test("Day06 - readFile - real"):
     val rows = readFile("inputs/Day06.txt")
@@ -29,4 +27,5 @@ class Day06Test extends munit.ScalaCheckSuite:
 
   test("Day06 - part2 - out of scope".tag(ignore)):
     assertEquals(part2(readFile("inputs/Day06Test.txt")), BigInt(3263827))
+
 end Day06Test
