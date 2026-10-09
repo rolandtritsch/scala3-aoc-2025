@@ -21,17 +21,18 @@ object Day01:
 
   /** Parse one rotation per line from a classpath resource such as `inputs/Day01.txt`.
     *
-    * @return rotations in the same order as the input
+    * @return
+    *   rotations in the same order as the input
     */
   def readFile(filename: String): Seq[Rotation] =
     require(filename.nonEmpty, "filename.nonEmpty")
     val source = Source.fromResource(filename)
-    try
-      source.getLines().map {
+    try source.getLines().map {
         case rotationPattern(direction, distance) => Rotation(direction.head, distance.toInt)
         case line => throw new IllegalArgumentException(s"Invalid rotation: $line")
       }.toVector
     finally source.close()
+    end try
   end readFile
 
   /** Apply all rotations starting at 50, counting only rotations whose ending position is zero.
@@ -39,10 +40,11 @@ object Day01:
     * Reducing each distance modulo 100 avoids overflowing the position arithmetic for large
     * rotations. `floorMod` handles negative (leftward) movement across zero correctly.
     *
-    * @return the number of rotations that leave the dial at zero
+    * @return
+    *   the number of rotations that leave the dial at zero
     */
-  def part1(rotations: Seq[Rotation]): Int =
-    rotations.foldLeft((50, 0)) { case ((position, count), rotation) =>
+  def part1(rotations: Seq[Rotation]): Int = rotations
+    .foldLeft((50, 0)) { case ((position, count), rotation) =>
       val steps = rotation.distance % 100
       val displacement = if rotation.direction == 'L' then -steps else steps
       val next = Math.floorMod(position + displacement, 100)

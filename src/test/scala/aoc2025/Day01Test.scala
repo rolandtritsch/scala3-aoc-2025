@@ -32,7 +32,10 @@ class Day01Test extends munit.ScalaCheckSuite:
     assertEquals(part1(readFile("inputs/Day01Test.txt")), 3)
 
   test("Day01 - part1 - wraparound and complete turns"):
-    assertEquals(part1(Seq(Rotation('L', 50), Rotation('R', 100), Rotation('L', 101), Rotation('R', 1))), 3)
+    assertEquals(
+      part1(Seq(Rotation('L', 50), Rotation('R', 100), Rotation('L', 101), Rotation('R', 1))),
+      3,
+    )
     assertEquals(part1(Seq(Rotation('R', 1000))), 0)
 
   test("Day01 - part1 - real"):
@@ -40,4 +43,5 @@ class Day01Test extends munit.ScalaCheckSuite:
 
   test("Day01 - part2 - out of scope".tag(ignore)):
     assertEquals(part2(readFile("inputs/Day01Test.txt")), 6)
+
 end Day01Test
