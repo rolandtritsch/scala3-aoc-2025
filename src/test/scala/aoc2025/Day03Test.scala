@@ -14,8 +14,14 @@ class Day03Test extends munit.ScalaCheckSuite:
   test("Day03 - readFile - real"):
     val banks = readFile("inputs/Day03.txt")
     assertEquals(banks.size, 200)
-    assertEquals(banks.head, "3223323232423342133321323321133325222233342332323323343713331321434231231232333333232334233323322122")
-    assertEquals(banks.last, "1112121122222223222222222222112242222232323212322222213112322622222132213212123253423222223242122232")
+    assertEquals(
+      banks.head,
+      "3223323232423342133321323321133325222233342332323323343713331321434231231232333333232334233323322122",
+    )
+    assertEquals(
+      banks.last,
+      "1112121122222223222222222222112242222232323212322222213112322622222132213212123253423222223242122232",
+    )
 
   test("Day03 - part1 - sample"):
     assertEquals(part1(readFile("inputs/Day03Test.txt")), 357L)
@@ -28,4 +34,5 @@ class Day03Test extends munit.ScalaCheckSuite:
 
   test("Day03 - part2 - out of scope".tag(ignore)):
     assertEquals(part2(readFile("inputs/Day03Test.txt")), 3121910778619L)
+
 end Day03Test
