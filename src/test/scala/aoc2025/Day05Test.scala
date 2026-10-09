@@ -28,4 +28,5 @@ class Day05Test extends munit.ScalaCheckSuite:
 
   test("Day05 - part2 - out of scope".tag(ignore)):
     assertEquals(part2(readFile("inputs/Day05Test.txt")), 14L)
+
 end Day05Test
