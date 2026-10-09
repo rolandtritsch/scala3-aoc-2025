@@ -37,8 +37,8 @@ object Day05:
       val separator = lines.indexWhere(_.isEmpty)
       require(separator >= 0, "database must separate ranges and available IDs with a blank line")
 
-      val freshRanges = lines.take(separator).filter(_.nonEmpty).map(parseRange)
-      val availableIds = lines.drop(separator + 1).filter(_.nonEmpty).map(_.toLong)
+      val freshRanges = lines.take(separator).withFilter(_.nonEmpty).map(parseRange)
+      val availableIds = lines.drop(separator + 1).withFilter(_.nonEmpty).map(_.toLong)
       require(freshRanges.nonEmpty, "freshRanges.nonEmpty")
       require(availableIds.nonEmpty, "availableIds.nonEmpty")
 

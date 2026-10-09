@@ -135,7 +135,7 @@ object Day08:
     end union
 
     /** Returns sizes of all disjoint components. */
-    def componentSizes: Seq[Int] = parents.indices.filter(node => find(node) == node).map(sizes)
+    def componentSizes: Seq[Int] = parents.indices.withFilter(node => find(node) == node).map(sizes)
       .toVector
     end componentSizes
 

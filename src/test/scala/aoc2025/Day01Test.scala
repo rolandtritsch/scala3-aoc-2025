@@ -12,7 +12,7 @@ class Day01Test extends munit.ScalaCheckSuite:
   test("Day01 - readFile"):
     val obtained = readFile("inputs/Day01.txt")
     assertEquals(obtained.length, 4498)
-    assert(obtained.forall(instruction => instruction.length >= 2))
+    assert(obtained.forall(_.length >= 2))
 
   test("Day01 - part1 - test"):
     val input = readFile("inputs/Day01Test.txt")

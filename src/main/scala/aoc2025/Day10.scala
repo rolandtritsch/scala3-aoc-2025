@@ -97,6 +97,7 @@ object Day10:
           minimum = math.min(minimum, Integer.bitCount(grayCode))
         previousGrayCode = grayCode
         subset += 1
+      end while
 
       require(minimum != Int.MaxValue, s"Machine target is unreachable: ${machine}")
       minimum
