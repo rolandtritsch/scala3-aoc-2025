@@ -20,20 +20,21 @@ object Day08:
 
   /** Read comma-separated 3D coordinates from a classpath resource.
     *
-    * @return one junction-box position per input line
+    * @return
+    *   one junction-box position per input line
     */
   def readFile(filename: String): Vector[Point] =
     require(filename.nonEmpty, "filename.nonEmpty")
     val source = Source.fromResource(filename)
-    try
-      source
-        .getLines()
-        .map: line =>
-          line.split(",").map(_.trim.toLong).toList match
-            case x :: y :: z :: Nil => Point(x, y, z)
-            case _                  => throw new IllegalArgumentException(s"Invalid coordinate: $line")
-        .toVector
+    try source.getLines().map: line =>
+        line.split(",").map(_.trim.toLong).toList match
+          case x :: y :: z :: Nil => Point(x, y, z)
+          case _ => throw new IllegalArgumentException(s"Invalid coordinate: $line")
+      .toVector
     finally source.close()
+    end try
+
+  end readFile
 
   /** Multiply the sizes of the three largest circuits after connecting the closest pairs.
     *
@@ -42,9 +43,12 @@ object Day08:
     * and tracks their sizes, after which the three largest sizes are multiplied. Squared distance
     * preserves Euclidean ordering and avoids floating-point calculations.
     *
-    * @param points the junction boxes to connect
-    * @param pairCount the number of closest pairs to attempt (1000 for the puzzle input)
-    * @return the product of the three largest circuit sizes
+    * @param points
+    *   the junction boxes to connect
+    * @param pairCount
+    *   the number of closest pairs to attempt (1000 for the puzzle input)
+    * @return
+    *   the product of the three largest circuit sizes
     */
   def part1(points: Seq[Point], pairCount: Int = 1000): Long =
     require(points.size >= 3, "at least three junction boxes are required")
@@ -74,6 +78,7 @@ object Day08:
         parent(current) = root
         current = next
       root
+    end rootOf
 
     pairs.sortBy(_._1).take(pairCount).foreach:
       case (_, left, right) =>
@@ -87,15 +92,12 @@ object Day08:
             parent(rightRoot) = leftRoot
             sizes(leftRoot) += sizes(rightRoot)
         else ()
+        end if
 
-    points.indices.iterator
-      .withFilter(index => parent(index) == index)
-      .map(sizes(_))
-      .toSeq
-      .sorted(using Ordering[Int].reverse)
-      .take(3)
-      .map(_.toLong)
-      .product
+    points.indices.iterator.withFilter(index => parent(index) == index).map(sizes(_)).toSeq
+      .sorted(using Ordering[Int].reverse).take(3).map(_.toLong).product
+
+  end part1
 
   /** Part 2 connects boxes until one circuit remains; it is intentionally out of scope. */
   def part2(points: Seq[Point]): Long = ???

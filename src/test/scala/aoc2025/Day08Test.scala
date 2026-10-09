@@ -40,4 +40,5 @@ class Day08Test extends munit.ScalaCheckSuite:
 
   test("Day08 - part2 - out of scope".tag(ignore)):
     intercept[NotImplementedError](part2(readFile("inputs/Day08Test.txt")))
+
 end Day08Test
