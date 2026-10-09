@@ -23,7 +23,10 @@ class Day02Test extends munit.ScalaCheckSuite:
   test("Day02 - part1 - boundaries and half lengths"):
     assertEquals(part1(Seq(IdRange(1, 10), IdRange(11, 11), IdRange(22, 22))), BigInt(33))
     assertEquals(part1(Seq(IdRange(99, 1010))), BigInt(99 + 1010))
-    assertEquals(part1(Seq(IdRange(111, 111), IdRange(1001, 1001), IdRange(1010, 1010))), BigInt(1010))
+    assertEquals(
+      part1(Seq(IdRange(111, 111), IdRange(1001, 1001), IdRange(1010, 1010))),
+      BigInt(1010),
+    )
     assertEquals(part1(Seq(IdRange(11, 99))), BigInt(495))
 
   test("Day02 - part1 - real"):
@@ -31,4 +34,5 @@ class Day02Test extends munit.ScalaCheckSuite:
 
   test("Day02 - part2 - out of scope".tag(ignore)):
     assertEquals(part2(readFile("inputs/Day02Test.txt")), BigInt("4174379265"))
+
 end Day02Test
