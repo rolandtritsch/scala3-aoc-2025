@@ -4,17 +4,12 @@ This file provides guidance to Claude Code when working with this repository. Fo
 
 Based on the [scala3-aoc-2024][] blueprint (which used Mill; this repo uses sbt).
 
-## Project-local skills and monitoring
+## Project-local skills
 
-Read applicable `skills/*/SKILL.md` before repeating work. Reusable scripts belong
-in `scripts/`; reviewed skill/script improvements are validated and committed in
-this repository. The [WatchDog telemetry skill][watchdog-telemetry] documents the
-read-only collector and its runtime inputs. It creates no report tasks or live
-mutations; the company observer handles its own reports separately.
-
-Validate collector changes with `python3 -B -m unittest discover -s scripts/tests -v`.
-Use `-B` to avoid Python bytecode in the checkout. Monitoring does not need an sbt
-build and does not alter puzzle solutions, agent state, or submission history.
+Read applicable `skills/*/SKILL.md` before repeating work. Reusable solution
+scripts belong in `scripts/`; reviewed skill/script improvements are validated
+and committed in this repository. Company monitoring tooling belongs to the
+company's `aoc-watchdog` skill.
 
 ## Toolchain
 
@@ -138,5 +133,3 @@ Day00 is a runnable template/dummy (not a real AoC day):
 [CONTRIBUTING.md]: CONTRIBUTING.md
 [asdf]: https://asdf-vm.com
 [scala3-aoc-2024]: https://github.com/rolandtritsch/scala3-aoc-2024
-
-[watchdog-telemetry]: skills/aoc-watchdog-telemetry/SKILL.md
