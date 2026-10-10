@@ -5,9 +5,9 @@ import scala.io.Source
 
 /** Day01 - Secret Entrance.
   *
-  * A safe's dial is labelled with the numbers 0 through 99 in order and starts pointing at 50.
-  * Each input line is a rotation of the form `<direction><distance>`: `L` turns toward lower
-  * numbers (wrapping 0 -> 99) and `R` turns toward higher numbers (wrapping 99 -> 0).
+  * A safe's dial is labelled with the numbers 0 through 99 in order and starts pointing at 50. Each
+  * input line is a rotation of the form `<direction><distance>`: `L` turns toward lower numbers
+  * (wrapping 0 -> 99) and `R` turns toward higher numbers (wrapping 99 -> 0).
   *
   * part1 answers the number of rotations after which the dial is left pointing at 0.
   */
@@ -87,6 +87,47 @@ object Day01:
     count
   end part1
 
-  /** Part 2 counts zero at every click, including mid-rotation; out of scope for now. */
-  def part2(rotations: Seq[Rotation]): Int = ???
+  /** Count the clicks of a single rotation that land the dial on 0.
+    *
+    * The dial moves one position per click, so a rotation of distance `d` visits `d` intermediate
+    * positions. The first click that reaches 0 is `first` clicks away (100 when the dial already
+    * points at 0, since a full lap is required to return to it). Every subsequent lap of 100 clicks
+    * reaches 0 again, so the total is `(d - first) / 100 + 1` when `d >= first`, otherwise 0.
+    *
+    * @param position
+    *   current dial position in `[0, 100)`
+    * @param rotation
+    *   the rotation to apply
+    * @return
+    *   the number of clicks (including the final one) that land on 0
+    */
+  private def zeroHits(position: Int, rotation: Rotation): Int =
+    val first = rotation.direction match
+      case Direction.R =>
+        val k = (Modulus - position) % Modulus
+        if k == 0 then Modulus else k
+      case Direction.L =>
+        val k = position % Modulus
+        if k == 0 then Modulus else k
+    val distance = rotation.distance
+    if distance < first then 0 else (distance - first) / Modulus + 1
+  end zeroHits
+
+  /** Count every click that leaves the dial pointing at 0, starting from 50.
+    *
+    * Unlike part1, a rotation contributes one hit for every click that lands on 0, whether that
+    * happens mid-rotation or at the end. A single left-to-right fold accumulates the running
+    * position and the running count, so this is O(n) time and O(1) extra space.
+    *
+    * @param rotations
+    *   the rotation sequence
+    * @return
+    *   the number of clicks landing on position 0
+    */
+  def part2(rotations: Seq[Rotation]): Int = rotations
+    .foldLeft((StartPosition, 0)) { case ((position, count), rotation) =>
+      (advance(position, rotation), count + zeroHits(position, rotation))
+    }._2
+  end part2
+
 end Day01

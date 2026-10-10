@@ -47,9 +47,41 @@ class Day01Test extends munit.ScalaCheckSuite:
     assertEquals(part1(Seq(Rotation(Direction.L, 50))), 1)
     assertEquals(part1(Seq(Rotation(Direction.R, 50))), 1)
     assertEquals(part1(Seq(Rotation(Direction.R, 1000))), 0)
-    assertEquals(part1(Seq(Rotation(Direction.L, 50), Rotation(Direction.R, 100), Rotation(Direction.L, 101), Rotation(Direction.R, 1))), 3)
+    assertEquals(
+      part1(Seq(
+        Rotation(Direction.L, 50),
+        Rotation(Direction.R, 100),
+        Rotation(Direction.L, 101),
+        Rotation(Direction.R, 1),
+      )),
+      3,
+    )
 
   test("Day01 - part1 - real"):
     assertEquals(part1(readFile("inputs/Day01.txt")), 1129)
+
+  test("Day01 - part2 - sample"):
+    assertEquals(part2(readFile("inputs/Day01Test.txt")), 6)
+
+  test("Day01 - part2 - boundaries"):
+    assertEquals(part2(Seq.empty), 0)
+    assertEquals(part2(Seq(Rotation(Direction.L, 50))), 1)
+    assertEquals(part2(Seq(Rotation(Direction.R, 50))), 1)
+    assertEquals(part2(Seq(Rotation(Direction.R, 1000))), 10)
+    assertEquals(part2(Seq(Rotation(Direction.L, 1000))), 10)
+    assertEquals(part2(Seq(Rotation(Direction.R, 49))), 0)
+    assertEquals(part2(Seq(Rotation(Direction.L, 49))), 0)
+    assertEquals(
+      part2(Seq(
+        Rotation(Direction.R, 50),
+        Rotation(Direction.R, 100),
+        Rotation(Direction.L, 101),
+        Rotation(Direction.R, 1),
+      )),
+      4,
+    )
+
+  test("Day01 - part2 - real"):
+    assertEquals(part2(readFile("inputs/Day01.txt")), 6638)
 
 end Day01Test
