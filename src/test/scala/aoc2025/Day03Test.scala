@@ -41,4 +41,31 @@ class Day03Test extends munit.FunSuite:
     assertEquals(banks.size, 200)
     assertEquals(part1(banks), 17207L)
 
+  test("Day03 - maxJoltage12 - sample banks"):
+    assertEquals(maxJoltage12("987654321111111"), 987654321111L)
+    assertEquals(maxJoltage12("811111111111119"), 811111111119L)
+    assertEquals(maxJoltage12("234234234234278"), 434234234278L)
+    assertEquals(maxJoltage12("818181911112111"), 888911112111L)
+
+  test("Day03 - maxJoltage12 - exactly twelve digits"):
+    assertEquals(maxJoltage12("999999999999"), 999999999999L)
+    assertEquals(maxJoltage12("111111111111"), 111111111111L)
+
+  test("Day03 - maxJoltage12 - keeps largest in order, drops least significant"):
+    // All nines and ones: the twelve nines win, dropping the twelve trailing ones.
+    assertEquals(maxJoltage12("999999999999111111111111"), 999999999999L)
+    // A larger digit near the end replaces smaller leading digits.
+    assertEquals(maxJoltage12("1111111111119"), 111111111119L)
+
+  test("Day03 - maxJoltage12 - descending must keep the largest prefix"):
+    assertEquals(maxJoltage12("987654321111111"), 987654321111L)
+
+  test("Day03 - part2 - sample"):
+    assertEquals(part2(readFile("inputs/Day03Test.txt")), 3121910778619L)
+
+  test("Day03 - part2 - real"):
+    val banks = readFile("inputs/Day03.txt")
+    assertEquals(banks.size, 200)
+    assertEquals(part2(banks), 170997883706617L)
+
 end Day03Test

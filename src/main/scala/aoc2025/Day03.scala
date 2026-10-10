@@ -58,9 +58,9 @@ object Day03:
 
   /** Sum the maximum joltage of every bank.
     *
-    * Each bank is independent, so the answer is the sum of [[maxJoltage]] over all banks. The result
-    * fits comfortably in [[Int]] (at most 99 per bank), but is returned as [[Long]] for symmetry with
-    * larger parts. O(total digits) time overall.
+    * Each bank is independent, so the answer is the sum of [[maxJoltage]] over all banks. The
+    * result fits comfortably in [[Int]] (at most 99 per bank), but is returned as [[Long]] for
+    * symmetry with larger parts. O(total digits) time overall.
     *
     * @param banks
     *   the banks read from the input
@@ -73,13 +73,55 @@ object Day03:
     banks.map(maxJoltage).sum.toLong
   end part1
 
-  /** Placeholder for Part Two; not yet assigned.
+  /** The largest joltage a single bank can produce by turning on exactly twelve batteries.
     *
-    * Part Two asks for the largest joltage produced by turning on exactly twelve batteries per bank.
+    * The joltage is the twelve-digit number formed by the chosen batteries in their original
+    * left-to-right order, so a bank of length `n` produces a length-12 subsequence. To maximize the
+    * value we must remove exactly `n - 12` digits while keeping the remaining twelve in order, i.e.
+    * find the lexicographically largest length-12 subsequence.
+    *
+    * A greedy monotonic stack does this in one left-to-right pass: keep every digit on a stack, but
+    * while a removal is still allowed (`remove` > 0) and the keystack's top is strictly smaller
+    * than the incoming digit, pop (remove) the top — replacing a smaller leading digit with a
+    * larger one always yields a larger number for a fixed length. Any leftover removals are dropped
+    * from the end, where they are least significant. This is O(n) time and O(n) space for a bank of
+    * length `n`.
+    *
+    * @param bank
+    *   a non-blank bank of battery ratings (at least twelve digits)
+    * @return
+    *   the maximum twelve-digit joltage this bank can produce
+    */
+  def maxJoltage12(bank: String): Long =
+    require(bank.length >= 12, s"bank must hold at least twelve batteries: '$bank'")
+    var remove = bank.length - 12
+    val kept = scala.collection.mutable.Stack[Char]()
+    for digit <- bank do
+      while remove > 0 && kept.nonEmpty && kept.top < digit do
+        kept.pop()
+        remove -= 1
+      kept.push(digit)
+    end for
+    // Any removals left over are dropped from the end (least significant positions).
+    val chosen = kept.toList.reverse.dropRight(remove)
+    chosen.foldLeft(0L)((acc, d) => acc * 10 + (d - '0'))
+  end maxJoltage12
+
+  /** Sum the maximum twelve-digit joltage of every bank.
+    *
+    * Each bank is independent, so the answer is the sum of [[maxJoltage12]] over all banks. Each
+    * bank's value is at most twelve nines (less than 10^12), so [[Long]] is safe up to the number
+    * of banks in the input. O(total digits) time overall.
+    *
+    * @param banks
+    *   the banks read from the input
+    * @return
+    *   the total output joltage
     */
   def part2(banks: Seq[String]): Long =
     require(banks.nonEmpty, "banks.nonEmpty")
-    ??? // Part Two not yet assigned.
+    logger.debug(s"banks: ${banks.size} banks")
+    banks.map(maxJoltage12).sum
   end part2
 
 end Day03
