@@ -54,8 +54,7 @@ object Day04:
 
     (for
       dr <- -1 to 1
-      dc <- -1 to 1
-      if dr != 0 || dc != 0
+      dc <- -1 to 1 if dr != 0 || dc != 0
       nr = r + dr
       nc = c + dc
       if nr >= 0 && nr < rows.size && nc >= 0 && nc < rows(nr).length && rows(nr)(nc) == '@'
@@ -79,20 +78,54 @@ object Day04:
 
     (for
       r <- rows.indices
-      c <- rows(r).indices
-      if rows(r)(c) == '@'
+      c <- rows(r).indices if rows(r)(c) == '@'
       if adjacentRolls(rows, r, c) < 4
     yield 1).size
   end part1
 
-  /** Placeholder for Part Two; not yet assigned.
+  /** Count every roll of paper the Elves can remove by repeatedly forklifting.
     *
-    * Part Two asks for the total number of rolls the Elves can remove by repeatedly removing every
-    * currently accessible roll.
+    * In each round every currently accessible roll (fewer than four adjacent `@` cells, see
+    * [[adjacentRolls]]) is identified against the current grid, then all of them are removed at
+    * once. Removal only ever reduces the neighbour count of surviving rolls, so accessibility is
+    * monotone: a roll never leaves the accessible set, and the final removable total does not
+    * depend on the removal order. The loop stops as soon as a round finds no accessible roll.
+    *
+    * Each round scans O(R * C) cells at O(1) each, and at least one roll is removed per round, so
+    * the whole process is O((R * C)^2) in the worst case for a grid of `R` rows and `C` columns,
+    * with O(R * C) extra space for the mutable working grid. In practice the number of rounds is
+    * far below `R * C`.
+    *
+    * @param rows
+    *   the paper-roll grid
+    * @return
+    *   the total number of removed rolls of paper
     */
   def part2(rows: Seq[String]): Int =
     require(rows.nonEmpty, "rows.nonEmpty")
-    ??? // Part Two not yet assigned.
+    logger.debug(s"rows: ${rows.size} rows")
+
+    var current = rows
+    var total = 0
+    var ongoing = true
+
+    while ongoing do
+      val removable =
+        for
+          r <- current.indices
+          c <- current(r).indices if current(r)(c) == '@' && adjacentRolls(current, r, c) < 4
+        yield (r, c)
+
+      if removable.isEmpty then ongoing = false
+      else
+        val grid = current.map(_.toCharArray).toArray
+        removable.foreach((r, c) => grid(r)(c) = '.')
+        current = grid.map(row => new String(row)).toSeq
+        total += removable.size
+      end if
+    end while
+
+    total
   end part2
 
 end Day04
