@@ -8,3 +8,4 @@ project/project/
 .vscode/
 .claude/
 .devcontainer
+__pycache__/

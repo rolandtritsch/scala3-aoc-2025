@@ -47,9 +47,22 @@ deterministic verdict line that submit and review can quote identically.
 - Deterministic: the same file always yields the same verdict line. No
   network, no submission, read-only on the repository.
 - Fixtures under `fixtures/` cover accepted, rejected, too-high, too-low,
-  rate-limit, already-completed, login, and unknown pages; each produces the
-  expected class (unknown exits 1). Missing-file and no-arg cases also exit
-  non-zero with a message.
+  rate-limit, already-completed, login, recorded-answer, unknown, and garbage
+  pages; each produces the expected class (unknown/garbage exit 1).
+  `recorded-answer.html` models a puzzle-day page that records the accepted
+  answer (`Your puzzle answer was <code>...` + gold-star sentence), which is
+  the reconciliation case used when a re-POST returns "already completed".
+- Re-run the deterministic harness before quoting a verdict or after editing
+  the script/fixtures:
+
+  ```bash
+  scripts/test-extract-aoc-verdict.py    # exit 0 = all fixtures + CLI cases pass
+  ```
+
+  The harness re-runs `extract-aoc-verdict.py` on every committed fixture and
+  asserts the expected verdict class and exit code, checks the script compiles,
+  and covers the no-arg (exit 2) and missing-file (exit 1) cases. It never
+  submits and never touches the network.
 - Validate any real saved page through this script before quoting its verdict.
 
 ## Stopping conditions

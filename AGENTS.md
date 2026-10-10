@@ -24,6 +24,13 @@ Returns `ACCEPTED`, `REJECTED_LOW`, `REJECTED_HIGH`, `REJECTED`, `RATE_LIMITED`,
 `ALREADY_COMPLETED`, `LOGIN_REQUIRED`, or `UNKNOWN` (unknown exits 1).
 Read-only; never submits. See `skills/extract-aoc-verdict/SKILL.md`.
 
+After editing the script or its fixtures, re-run the deterministic validation
+harness (all fixtures + CLI failure cases, exit 0 on success):
+
+```bash
+scripts/test-extract-aoc-verdict.py
+```
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
