@@ -31,6 +31,21 @@ harness (all fixtures + CLI failure cases, exit 0 on success):
 scripts/test-extract-aoc-verdict.py
 ```
 
+### Largest length-k subsequence (max value, keep order)
+
+For puzzles that keep exactly `k` digits/characters from each line in their
+original order to maximize the resulting number (e.g. Day 03 part 2 "turn on
+exactly twelve batteries"), use the greedy monotonic-stack technique in
+`src/main/scala/aoc2025/Day03.scala` (`maxJoltage12`). Cross-check any such
+solution deterministically:
+
+```bash
+python3 scripts/check-largest-k-subsequence.py                 # self-test (brute-force + sample)
+python3 scripts/check-largest-k-subsequence.py inputs/Day03.txt 12 170997883706617
+```
+
+Read-only; never submits. See `skills/largest-k-subsequence/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
