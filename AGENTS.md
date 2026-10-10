@@ -11,19 +11,20 @@ scripts belong in `scripts/`; reviewed skill/script improvements are validated
 and committed in this repository. Company monitoring tooling belongs to the
 company's `aoc-watchdog` skill.
 
-### Verify a committed day part-1 solution
+### Verify a committed day solution
 
-Before a submit or review disposition for day NN part 1, reproduce the local
-evidence chain from the synchronized checkout:
+Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
+the local evidence chain from the synchronized checkout:
 
 ```bash
-scripts/verify-day.sh <NN> [EXPECTED_PART1]   # e.g. scripts/verify-day.sh 01 1129
+scripts/verify-day.sh <NN> [EXPECTED_PART1] [EXPECTED_PART2]   # e.g. scripts/verify-day.sh 01 1129 6638
 ```
 
 The script checks `HEAD == origin/main` with a clean tree, runs the day-specific
 test suite (`sbt testOnly aoc2025.DayNNTest`), and asserts the `sbt run`
-part-1 output against `EXPECTED_PART1` when provided. See `skills/verify-day/SKILL.md`
-for the full procedure and stopping conditions.
+part-1 (and part-2 when `EXPECTED_PART2` is given) output against the supplied
+expected values. See `skills/verify-day/SKILL.md` for the full procedure and
+stopping conditions.
 
 ## Toolchain
 
