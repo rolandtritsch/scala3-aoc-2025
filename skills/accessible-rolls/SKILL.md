@@ -6,10 +6,12 @@ description: Solve "count/peel cells in a grid whose occupancy is below a neighb
 # Skill: accessible-rolls
 
 Distilled from the Day 04 part 1 review (AOC-116, reviewed commit 78c0f54,
-accepted answer 1356). The puzzle: rolls of paper (`@`) sit on a grid (`.` is
-empty). A forklift can access a roll only when fewer than four rolls occupy its
-eight adjacent (king-move) positions. Part 1 counts accessible rolls; part 2
-removes accessible rolls, which can make more rolls accessible, and repeats.
+accepted answer 1356) and confirmed by the Day 04 part 2 review (AOC-121,
+reviewed commit 8cb2356, accepted answer 8713). The puzzle: rolls of paper (`@`)
+sit on a grid (`.` is empty). A forklift can access a roll only when fewer than
+four rolls occupy its eight adjacent (king-move) positions. Part 1 counts
+accessible rolls; part 2 removes accessible rolls, which can make more rolls
+accessible, and repeats.
 
 Generalized, this is the "occupancy-threshold neighbourhood" pattern: a cell is
 *accessible* when the number of occupied cells in its 8-neighbourhood is below
@@ -45,9 +47,10 @@ removing all currently-accessible rolls in rounds, or removing them one at a
 time in any order, yields the same total. This monotonicity lets one simulate
 either way and cross-check the other.
 
-Reference implementation for the cascade is not yet in the Scala sources (part 2
-is not yet assigned); `scripts/check-accessible-rolls.py` provides a validated
-round-based simulator plus an independent one-at-a-time reference.
+Reference implementation: `src/main/scala/aoc2025/Day04.scala` (`part2`,
+accepted answer 8713 on the real grid, 43 on the sample) performs the
+round-based cascade; `scripts/check-accessible-rolls.py` provides a validated
+round-based simulator plus an independent one-at-a-time reference for it.
 
 ## Cross-check / validation
 
@@ -62,13 +65,11 @@ Deterministic, read-only helper: `scripts/check-accessible-rolls.py`.
   the peel total, and asserts each when given. Examples that re-derive known
   answers:
   - `python3 scripts/check-accessible-rolls.py src/main/resources/inputs/Day04Test.txt 13 43` (official sample)
-  - `python3 scripts/check-accessible-rolls.py src/main/resources/inputs/Day04.txt 1356` (accepted part-1 answer; the peel total prints as informational only, part 2 is not yet assigned)
+  - `python3 scripts/check-accessible-rolls.py src/main/resources/inputs/Day04.txt 1356 8713` (accepted part-1 and part-2 answers)
 - Failure cases (all exit 1 or 2): missing file, empty grid, characters other
   than `@`/`.`, ragged rows, wrong `COUNT`/`PEEL`, unknown usage.
 
-Never submit or push from this helper; it is read-only and local. The
-real-input peel total is informational for the later part-2 cycle, not an
-answer to submit.
+Never submit or push from this helper; it is read-only and local.
 
 ## Edge cases to cover in tests
 

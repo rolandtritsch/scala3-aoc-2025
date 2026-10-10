@@ -23,8 +23,7 @@ Modes:
                           implementations, peel via round-based vs one-at-a-
                           time removal), then asserts the official Day 04
                           sample (count 13, peel 43) and the accepted Day 04
-                          part-1 real-input count 1356. Prints the real-input
-                          peel total as informational only.
+                          real-input answers (count 1356, peel 8713).
   <FILE> [COUNT] [PEEL]   Read a grid of '@'/'.' (one row per non-blank line),
                           print the accessible count and the peel total, and
                           assert each when a corresponding expected value is
@@ -42,6 +41,7 @@ Exit codes:
   2  usage error
 """
 
+import os
 import random
 import sys
 
@@ -60,6 +60,13 @@ THRESHOLD = 4
 SAMPLE_COUNT = 13
 SAMPLE_PEEL = 43
 REAL_COUNT = 1356
+REAL_PEEL = 8713
+
+
+def real_grid_path():
+    """Path to the Day 04 real-input grid, resolved relative to this script."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(here, "..", "src", "main", "resources", "inputs", "Day04.txt")
 
 
 def parse_grid(text):
@@ -189,7 +196,7 @@ def count_accessible_alt(rows):
 
 def self_test():
     """Deterministic validation: seeded random cross-checks + official sample
-    + the accepted Day 04 part-1 real-input count."""
+    + the accepted Day 04 real-input answers (count 1356, peel 8713)."""
     random.seed(20251010)
 
     # Random small grids: counting via two implementations, peel via two
@@ -221,8 +228,21 @@ def self_test():
               file=sys.stderr)
         return 1
 
+    # Accepted Day 04 real-input answers (part 1 count 1356, part 2 peel 8713).
+    with open(real_grid_path(), "r", encoding="utf-8") as fh:
+        real = parse_grid(fh.read())
+    if count_accessible(real) != REAL_COUNT:
+        print(f"FAIL: real count {count_accessible(real)} != {REAL_COUNT}",
+              file=sys.stderr)
+        return 1
+    if peel_rounds(real) != REAL_PEEL:
+        print(f"FAIL: real peel {peel_rounds(real)} != {REAL_PEEL}",
+              file=sys.stderr)
+        return 1
+
     print(f"ok: {cases} random count+peel cross-checks, sample count == "
-          f"{SAMPLE_COUNT}, sample peel == {SAMPLE_PEEL}")
+          f"{SAMPLE_COUNT}, sample peel == {SAMPLE_PEEL}, real count == "
+          f"{REAL_COUNT}, real peel == {REAL_PEEL}")
     return 0
 
 

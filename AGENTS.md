@@ -54,12 +54,12 @@ access"), and/or peel the grid by repeatedly removing every currently-accessible
 cell until none remain (Day 04 part 2 cascade), cross-check deterministically:
 
 ```bash
-python3 scripts/check-accessible-rolls.py                  # self-test (random + official sample: count 13, peel 43)
-python3 scripts/check-accessible-rolls.py inputs/Day04.txt 1356
+python3 scripts/check-accessible-rolls.py                            # self-test (random + sample 13/43 + real 1356/8713)
+python3 scripts/check-accessible-rolls.py inputs/Day04.txt 1356 8713
 ```
 
-Read-only; never submits. The real-input peel total is informational only
-(part 2 not yet assigned). See `skills/accessible-rolls/SKILL.md`.
+Read-only; never submits. The self-test asserts the accepted Day 04 real-input
+answers (count 1356, peel 8713). See `skills/accessible-rolls/SKILL.md`.
 
 ### Verify a committed day solution
 
