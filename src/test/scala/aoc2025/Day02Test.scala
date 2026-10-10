@@ -65,4 +65,40 @@ class Day02Test extends munit.FunSuite:
     assertEquals(ranges.size, 34)
     assertEquals(part1(ranges), 44487518055L)
 
+  test("Day02 - isInvalidPart2 - sequence repeated at least twice"):
+    assert(isInvalidPart2(11)) // "1" twice
+    assert(isInvalidPart2(111)) // "1" thrice
+    assert(isInvalidPart2(99))
+    assert(isInvalidPart2(999))
+    assert(isInvalidPart2(1010))
+    assert(isInvalidPart2(12341234L)) // "1234" twice
+    assert(isInvalidPart2(123123123L)) // "123" thrice
+    assert(isInvalidPart2(1212121212L)) // "12" five times
+    assert(isInvalidPart2(1111111)) // "1" seven times
+    assert(isInvalidPart2(565656)) // "56" thrice
+    assert(isInvalidPart2(824824824L)) // "824" thrice
+    assert(isInvalidPart2(2121212121L)) // "21" five times
+
+  test("Day02 - isInvalidPart2 - non-repeated IDs"):
+    assert(!isInvalidPart2(1))
+    assert(!isInvalidPart2(12))
+    assert(!isInvalidPart2(101))
+    assert(!isInvalidPart2(1001))
+    assert(!isInvalidPart2(112)) // "1" then "12", not a clean repeated prefix
+    assert(!isInvalidPart2(111112)) // longer odd case with a trailing digit
+
+  test("Day02 - part2 - sample"):
+    assertEquals(part2(readFile("inputs/Day02Test.txt")), 4174379265L)
+
+  test("Day02 - part2 - single-ID boundaries"):
+    assertEquals(part2(Seq(IdRange(111, 111))), 111L)
+    assertEquals(part2(Seq(IdRange(12, 12))), 0L)
+    assertEquals(part2(Seq(IdRange(1, 9))), 0L)
+    assertEquals(part2(Seq(IdRange(1111111, 1111111))), 1111111L)
+    assertEquals(part2(Seq(IdRange(565656, 565656))), 565656L)
+
+  test("Day02 - part2 - real"):
+    val ranges = readFile("inputs/Day02.txt")
+    assertEquals(part2(ranges), 53481866137L)
+
 end Day02Test

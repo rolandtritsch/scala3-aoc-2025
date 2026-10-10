@@ -79,14 +79,47 @@ object Day02:
     require(ranges.nonEmpty, "ranges.nonEmpty")
     logger.debug(s"ranges: ${ranges}")
 
-    ranges.iterator
-      .flatMap(range => (range.first to range.last).iterator)
-      .filter(isInvalid)
-      .sum
+    ranges.iterator.flatMap(range => (range.first to range.last).iterator).filter(isInvalid).sum
   end part1
 
-  /** Part 2 counts IDs made of a digit sequence repeated at least twice; out of scope for now. */
-  def part2(ranges: Seq[IdRange]): Long = ???
+  /** True when `id` is some digit sequence repeated at least twice.
+    *
+    * The decimal string of `id` is invalid when it splits into `k >= 2` identical copies of a
+    * shorter prefix, i.e. there is a period `p` (a proper divisor of the digit count) such that the
+    * whole string is the leading `p` digits repeated `digits.length / p` times. The part 1 rule
+    * (exactly twice) is the special case `k == 2`; part 2 additionally accepts `111` ("1" thrice),
+    * `565656` ("56" thrice) and `1111111` ("1" seven times).
+    *
+    * @param id
+    *   a product ID
+    * @return
+    *   whether the ID is invalid under the part 2 rule
+    */
+  def isInvalidPart2(id: Long): Boolean =
+    val digits = id.toString
+    val n = digits.length
+    (1 until n).exists: p =>
+      (n % p == 0) && (0 until n).forall(i => digits.charAt(i) == digits.charAt(i % p))
+  end isInvalidPart2
+
+  /** Sum every part 2 invalid ID appearing in the given ranges.
+    *
+    * Every range is bounded in size, so iterating each ID and summing the ones matching
+    * [[isInvalidPart2]] visits at most a few million values with an O(digits^2) check each in the
+    * worst case, bounded in practice by the small number of digits. The result is returned as
+    * [[Long]] because the sum of ten-digit IDs exceeds [[Int]] range.
+    *
+    * @param ranges
+    *   the inclusive product-ID ranges
+    * @return
+    *   the sum of the part 2 invalid IDs
+    */
+  def part2(ranges: Seq[IdRange]): Long =
+    require(ranges.nonEmpty, "ranges.nonEmpty")
+    logger.debug(s"ranges: ${ranges}")
+
+    ranges.iterator.flatMap(range => (range.first to range.last).iterator).filter(isInvalidPart2)
+      .sum
   end part2
 
 end Day02
