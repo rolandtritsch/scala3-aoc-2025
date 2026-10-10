@@ -6,6 +6,10 @@ Solutions to [Advent of Code 2025][aoc2025] challenges implemented in Scala 3.
 
 Based on the [scala3-aoc-2024][] blueprint (migrated from Mill to sbt).
 
+The repository has been reset to the Day00 template. Other problems, inputs,
+solutions, and tests have been removed. The build and reusable utilities remain;
+`.gitkeep` files preserve empty folders.
+
 ## Toolchain (managed with asdf)
 
 | Tool | Version | Source         |
@@ -37,7 +41,7 @@ This implementation focuses on:
 ### Running Solutions
 
 ```bash
-# Run all solutions
+# Run the Day00 template
 sbt run
 
 # Run tests
