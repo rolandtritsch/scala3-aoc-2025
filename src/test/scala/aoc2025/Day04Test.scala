@@ -54,4 +54,23 @@ class Day04Test extends munit.FunSuite:
     val rows = readFile("inputs/Day04.txt")
     assertEquals(part1(rows), 1356)
 
+  test("Day04 - part2 - single roll is removed"):
+    assertEquals(part2(Seq("@")), 1)
+
+  test("Day04 - part2 - no rolls"):
+    assertEquals(part2(Seq("...", "...", "...")), 0)
+
+  test("Day04 - part2 - all-roll 3x3 block removes the four corners, then the rest"):
+    assertEquals(part2(Seq("@@@", "@@@", "@@@")), 9)
+
+  test("Day04 - part2 - a 2x2 block is fully removable"):
+    assertEquals(part2(Seq("@@", "@@")), 4)
+
+  test("Day04 - part2 - sample"):
+    assertEquals(part2(readFile("inputs/Day04Test.txt")), 43)
+
+  test("Day04 - part2 - real"):
+    val rows = readFile("inputs/Day04.txt")
+    assertEquals(part2(rows), 8713)
+
 end Day04Test
