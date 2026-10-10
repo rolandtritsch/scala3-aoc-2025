@@ -46,6 +46,21 @@ python3 scripts/check-largest-k-subsequence.py inputs/Day03.txt 12 1709978837066
 
 Read-only; never submits. See `skills/largest-k-subsequence/SKILL.md`.
 
+### Accessible rolls / occupancy-threshold grid peeling
+
+For puzzles that count cells in a grid whose eight king-move neighbours contain
+fewer than `K` occupied cells (e.g. Day 04 part 1 "rolls of paper a forklift can
+access"), and/or peel the grid by repeatedly removing every currently-accessible
+cell until none remain (Day 04 part 2 cascade), cross-check deterministically:
+
+```bash
+python3 scripts/check-accessible-rolls.py                  # self-test (random + official sample: count 13, peel 43)
+python3 scripts/check-accessible-rolls.py inputs/Day04.txt 1356
+```
+
+Read-only; never submits. The real-input peel total is informational only
+(part 2 not yet assigned). See `skills/accessible-rolls/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
