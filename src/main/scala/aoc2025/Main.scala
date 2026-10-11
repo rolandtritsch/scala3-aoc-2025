@@ -47,4 +47,7 @@ def solve() =
   val input10 = Day10.readFile("inputs/Day10.txt")
   println(s"Day10 - part1: ${Day10.totalPresses(input10)}")
   println(s"Day10 - part2: ${Day10.totalJoltagePresses(input10)}")
+
+  val input11 = Day11.readFile("inputs/Day11.txt")
+  println(s"Day11 - part1: ${Day11.part1(input11)}")
 end solve
