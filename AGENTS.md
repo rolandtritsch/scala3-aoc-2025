@@ -72,9 +72,19 @@ python3 scripts/check-range-coverage.py                            # self-test (
 python3 scripts/check-range-coverage.py inputs/Day05.txt 848
 ```
 
-Read-only; never submits. The self-test asserts the accepted Day 05 real-input
-answer 848 and cross-checks a direct scan against a merged-interval reference.
-See `skills/range-coverage/SKILL.md`.
+For the companion union-count shape — how many IDs the ranges themselves cover
+in total, i.e. the merged inclusive-union count, ignoring any available-ID list
+(e.g. Day 05 part 2) — add `--union`:
+
+```bash
+python3 scripts/check-range-coverage.py --union                     # self-test (random + sample 14 + real 334714395325710)
+python3 scripts/check-range-coverage.py --union inputs/Day05.txt 334714395325710
+```
+
+Read-only; never submits. The self-tests assert the accepted Day 05 real-input
+answers 848 (covered count, 182 ranges vs 1000 IDs) and 334714395325710 (union
+count, 83 merged spans) and cross-check a direct scan against a merged-interval
+reference. See `skills/range-coverage/SKILL.md`.
 
 ### Verify a committed day solution
 
