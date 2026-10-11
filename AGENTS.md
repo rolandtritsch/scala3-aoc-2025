@@ -271,6 +271,28 @@ generated machines and asserts the accepted Day 10 real-input answer 16765,
 the official sample 33, and the per-machine minima `[10, 12, 11]`. See
 `skills/joltage-counters/SKILL.md`.
 
+### Count distinct directed paths through a DAG (from a source node to a target)
+
+For puzzles where each line lists a node followed by the nodes its outputs
+attach to (`node: out1 out2 ...`), data flows only forward through outputs so
+the graph is a directed acyclic graph, and the answer is the number of distinct
+directed paths from a source device (e.g. `you`) to a target device (e.g.
+`out`) — e.g. Day 11 part 1 "Reactor" — cross-check deterministically:
+
+```bash
+python3 scripts/check-dag-paths.py                 # self-test (random + sample 5 + real 543)
+python3 scripts/check-dag-paths.py inputs/Day11Test.txt 5
+python3 scripts/check-dag-paths.py inputs/Day11.txt 543
+```
+
+Read-only; never submits. The self-test cross-checks two independent
+implementations (a memoised depth-first sum mirroring `Day11.part1`, and an
+explicit path-enumeration reference) on 4000 seeded random acyclic wirings
+(3–12 devices, `you` first / `out` last) and asserts the accepted Day 11
+real-input answer 543 and the official sample 5 (10 devices). It also covers
+the unreachable-source case (both implementations count 0). See
+`skills/dag-paths/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
