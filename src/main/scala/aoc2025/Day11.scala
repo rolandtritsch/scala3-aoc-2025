@@ -82,4 +82,49 @@ object Day11:
     countPaths(SourceDevice)
   end part1
 
+  /** The device a part-two path starts from (the server rack). */
+  private val Part2SourceDevice = "svr"
+
+  /** The devices every part-two path must visit (in any order). */
+  private val RequiredDevices = Vector("dac", "fft")
+
+  /** Count the distinct directed paths from `svr` to `out` that visit both `dac` and `fft`.
+    *
+    * Part two moves the source to `svr` and additionally requires each counted path to pass through
+    * both of the devices `dac` and `fft`, in any order. Data still flows only forward, so the
+    * wiring remains a directed acyclic graph. Each required device is assigned a bit, and a path's
+    * state is the set of required devices visited so far; at `out` a path counts only when every
+    * required bit is set. The recursion is memoised on `(device, visitedMask)`, giving O(v * 2^k +
+    * e * 2^k) time and space where `k` is the number of required devices (two here) and `v`/`e` the
+    * device/edge counts.
+    *
+    * @param wiring
+    *   the device-to-outputs map produced by [[readFile]]
+    * @return
+    *   the number of distinct paths from `svr` to `out` visiting both `dac` and `fft`; `0` when no
+    *   such path exists or `svr` has none
+    */
+  def part2(wiring: Map[String, Vector[String]]): Long =
+    require(wiring.contains(Part2SourceDevice), s"wiring contains '$Part2SourceDevice'")
+    require(RequiredDevices.nonEmpty, "at least one required device")
+
+    val requiredMask = RequiredDevices.zipWithIndex.map((name, i) => name -> (1 << i)).toMap
+    val requiredFull = (1 << RequiredDevices.size) - 1
+
+    val memo = scala.collection.mutable.Map.empty[(String, Int), Long]
+
+    def countPaths(device: String, visited: Int): Long = memo.getOrElseUpdate(
+      (device, visited),
+      if device == TargetDevice then (if visited == requiredFull then 1L else 0L)
+      else
+        val nextVisited = requiredMask.get(device) match
+          case Some(bit) => visited | bit
+          case None      => visited
+        wiring.getOrElse(device, Vector.empty)
+          .foldLeft(0L)((acc, next) => acc + countPaths(next, nextVisited)),
+    )
+
+    countPaths(Part2SourceDevice, 0)
+  end part2
+
 end Day11
