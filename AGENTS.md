@@ -207,6 +207,29 @@ Day 09 real-input answer 4777967538 and the official sample 50 (best pair
 `src/main/resources/inputs` from anywhere in the repo. See
 `skills/red-rectangles/SKILL.md`.
 
+For the region-restricted variant (Day 09 part 2) — the rectangle may only use
+red or green tiles, where every red tile connects to the tile before/after it
+(the list wraps) by a straight green segment, so the red tiles are the vertices
+of a closed rectilinear loop and every tile inside it is also green; a pair is
+valid only when its whole cell span lies inside-or-on the loop (sample 24, real
+1439894345) — add `--region`:
+
+```bash
+python3 scripts/check-red-rectangles.py --region           # self-test (random + sample 24 + real 1439894345)
+python3 scripts/check-red-rectangles.py --region inputs/Day09Test.txt 24
+python3 scripts/check-red-rectangles.py --region inputs/Day09.txt 1439894345
+```
+
+Read-only; never submits. The `--region` self-test cross-checks two independent
+implementations (a coordinate-compressed 2D prefix-sum mirror of `Day09.part2`
+and a direct per-cell containment reference) on 3000 generated simple
+rectilinear loops and asserts the accepted Day 09 real-input answer 1439894345,
+the official sample 24 (best pair (9,5)-(2,3)), and that the whole-loop usable
+cell count 7070643880 equals Pick's theorem A + B/2 + 1 (shoelace A=7070349835,
+boundary B=588088). The per-cell reference is skipped for very large bounding
+boxes (real input) where the Pick's-theorem cell count is the independent check.
+See `skills/red-rectangles/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
