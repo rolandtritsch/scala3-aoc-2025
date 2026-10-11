@@ -310,6 +310,29 @@ paths) on 3000 seeded random acyclic wirings (4–12 devices, `svr` first /
 and the official part-2 sample 2 (13 devices). See
 `skills/dag-paths/SKILL.md`.
 
+### Polyomino present packing (fit every shape into each rectangular region)
+
+For puzzles that ask how many rectangular regions can fit a multiset of small
+present shapes, where each present may be rotated/reflected, the `#` cells of
+different presents may not overlap, and the `.` cells are shared freely (e.g.
+Day 12 part 1 "Christmas Tree Farm"), cross-check deterministically:
+
+```bash
+python3 scripts/check-polyomino-packing.py                    # self-test (random + sample 2 + real 408, ~45s)
+python3 scripts/check-polyomino-packing.py inputs/Day12Test.txt 2
+python3 scripts/check-polyomino-packing.py inputs/Day12.txt 408
+```
+
+Read-only; never submits. The self-test cross-checks the anchored backtracking
+mirror (of `Day12.part1`) against an independent exact-cover reference on 4000
+seeded random small regions, asserts the official Day 12 sample (2) including
+its area-feasible-but-geometrically-impossible third region (`12x5: 1 0 1 0 3 2`),
+the boundary fixtures, and the accepted Day 12 real-input answer 408 — which
+equals the independent area-feasibility count on the real input. The file mode
+also prints that area-feasibility count (`area=`) alongside `fits=`. The
+self-test takes about 45 seconds because the real input runs the full geometric
+search over 1000 regions. See `skills/polyomino-packing/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
