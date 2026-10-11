@@ -33,4 +33,19 @@ class Day08Test extends munit.FunSuite:
   test("Day08 - part1 - real"):
     assertEquals(part1(readFile("inputs/Day08.txt"), 1000), 90036L)
 
+  test("Day08 - part2 - single box"):
+    assertEquals(part2(Vector(Point3D(7, 1, 2))), 0L)
+
+  test("Day08 - part2 - two boxes"):
+    assertEquals(part2(Vector(Point3D(3, 0, 0), Point3D(5, 0, 0))), 15L)
+
+  test("Day08 - part2 - three collinear boxes"):
+    assertEquals(part2(Vector(Point3D(0, 0, 0), Point3D(1, 0, 0), Point3D(10, 0, 0))), 10L)
+
+  test("Day08 - part2 - sample"):
+    assertEquals(part2(readFile("inputs/Day08Test.txt")), 25272L)
+
+  test("Day08 - part2 - real"):
+    assertEquals(part2(readFile("inputs/Day08.txt")), 6083499488L)
+
 end Day08Test

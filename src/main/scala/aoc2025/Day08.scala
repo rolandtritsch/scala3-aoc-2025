@@ -35,8 +35,7 @@ object Day08:
     logger.debug(s"filename: ${filename}")
 
     val source = Source.fromResource(filename)
-    try
-      source.getLines().toVector.map: line =>
+    try source.getLines().toVector.map: line =>
         val parts = line.trim.split(',')
         require(parts.length == 3, s"expected an X,Y,Z triple: $line")
         Point3D(parts(0).toInt, parts(1).toInt, parts(2).toInt)
@@ -69,8 +68,8 @@ object Day08:
     * All n*(n-1)/2 unordered pairs are formed and sorted by squared distance. The `connections`
     * closest pairs are then processed in order with a union-find: a pair whose boxes are already in
     * the same circuit does nothing, otherwise the two circuits are merged. Finally the component
-    * sizes are collected, sorted descending, and the three largest are multiplied. This is
-    * O(n^2 log n) time (dominated by sorting the pairs) and O(n^2) space.
+    * sizes are collected, sorted descending, and the three largest are multiplied. This is O(n^2
+    * log n) time (dominated by sorting the pairs) and O(n^2) space.
     *
     * @param points
     *   the junction box positions
@@ -109,6 +108,7 @@ object Day08:
         else
           parent(rb) = ra
           size(ra) += size(rb)
+      end if
     end union
 
     val pairs =
@@ -127,5 +127,73 @@ object Day08:
     val sizes = componentSizes.filter(_ > 0).sorted.reverse
     sizes.take(3).map(_.toLong).product
   end part1
+
+  /** Connect closest pairs until every box is in one circuit; product of the last two boxes' X.
+    *
+    * The same sorted all-pairs edge list as [[part1]] is consumed in ascending distance order by a
+    * union-find, but instead of stopping after a fixed number of connections, processing continues
+    * until a single merge unites every box into one circuit. That (final) merge is the edge the
+    * Elves connect last, so its two endpoints are the pair whose X coordinates are multiplied. Ties
+    * are broken by the stable index order of the pair list, matching [[part1]]. This is O(n^2 log
+    * n) time (sorting dominates) and O(n^2) space; the loop body runs at most n - 1 successful
+    * merges.
+    *
+    * @param points
+    *   the junction box positions
+    * @return
+    *   the product of the X coordinates of the last two boxes connected
+    */
+  def part2(points: Vector[Point3D]): Long =
+    require(points.nonEmpty, "points.nonEmpty")
+    logger.debug(s"points: ${points.size}")
+
+    val n = points.size
+    val parent = Array.tabulate(n)(identity)
+    val size = Array.fill(n)(1)
+
+    def find(x: Int): Int =
+      var root = x
+      while parent(root) != root do root = parent(root)
+      var cur = x
+      while parent(cur) != root do
+        val next = parent(cur)
+        parent(cur) = root
+        cur = next
+      root
+    end find
+
+    var lastX = 0L
+
+    val pairs =
+      for
+        i <- 0 until n
+        j <- (i + 1) until n
+      yield (squaredDistance(points(i), points(j)), i, j)
+    val sorted = pairs.sortBy(_._1)
+
+    var connected = false
+    var idx = 0
+    while !connected && idx < sorted.length do
+      val (_, i, j) = sorted(idx)
+      val ra = find(i)
+      val rb = find(j)
+      if ra != rb then
+        val newRoot =
+          if size(ra) < size(rb) then
+            parent(ra) = rb
+            size(rb) += size(ra)
+            rb
+          else
+            parent(rb) = ra
+            size(ra) += size(rb)
+            ra
+        lastX = points(i).x.toLong * points(j).x.toLong
+        connected = size(newRoot) == n
+      end if
+      idx += 1
+    end while
+
+    lastX
+  end part2
 
 end Day08
