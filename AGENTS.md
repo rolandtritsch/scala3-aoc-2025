@@ -129,6 +129,21 @@ BFS over occupied cells that visits each merged cell once) on 2000 generated
 grids and asserts the accepted Day 07 real-input answer 1605 and the official
 sample 21. See `skills/beam-splits/SKILL.md`.
 
+For the many-worlds variant (Day 07 part 2) — a single particle takes BOTH
+paths at every splitter and distinct timelines are counted WITHOUT deduplicating
+convergent paths (sample 40, real 29893386035180) — add `--many-worlds`:
+
+```bash
+python3 scripts/check-beam-splits.py --many-worlds           # self-test (random + sample 40 + real 29893386035180)
+python3 scripts/check-beam-splits.py --many-worlds inputs/Day07.txt 29893386035180
+```
+
+Read-only; never submits. The `--many-worlds` self-test cross-checks two
+independent implementations (row-by-row per-column timeline multiplicities
+mirroring `Day07.part2`, and a recursive memoized path-counting reference) on
+2000 generated grids and asserts the accepted Day 07 real-input answer
+29893386035180 and the official sample 40. See `skills/beam-splits/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
