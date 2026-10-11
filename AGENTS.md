@@ -230,6 +230,25 @@ boundary B=588088). The per-cell reference is skipped for very large bounding
 boxes (real input) where the Pick's-theorem cell count is the independent check.
 See `skills/red-rectangles/SKILL.md`.
 
+### Button-toggle minimum presses (min-weight GF(2) XOR subset)
+
+For puzzles where each button toggles a fixed subset of binary indicator
+lights, pressing twice cancels, and the answer is the fewest total presses to
+reach every target pattern (e.g. Day 10 part 1 "Factory"), cross-check
+deterministically. Each line is `[######] (btn ids) ... {ignored joltages}`:
+
+```bash
+python3 scripts/check-toggle-presses.py                 # self-test (random + sample 7 + real 417)
+python3 scripts/check-toggle-presses.py inputs/Day10Test.txt 7
+python3 scripts/check-toggle-presses.py inputs/Day10.txt 417
+```
+
+Read-only; never submits. The self-test cross-checks two independent
+implementations (full 2^b subset enumeration mirroring `Day10.part1`, and a
+BFS over the XOR light-pattern state graph) on 2000 generated machines and
+asserts the accepted Day 10 real-input answer 417, the official sample 7, and
+the per-machine minima `[2, 3, 2]`. See `skills/toggle-presses/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
