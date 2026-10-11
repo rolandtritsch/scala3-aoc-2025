@@ -1,6 +1,6 @@
 ---
 name: extract-aoc-verdict
-description: Classify a saved AoC answer-response HTML file into a deterministic verdict (ACCEPTED, REJECTED_LOW, REJECTED_HIGH, REJECTED, RATE_LIMITED, ALREADY_COMPLETED, LOGIN_REQUIRED, UNKNOWN) with its verbatim wording. Use when the submitter or reviewer must re-confirm what the AoC server actually returned from a saved response page without re-submitting or trusting a paraphrase.
+description: Classify a saved AoC answer-response HTML file into a deterministic verdict (ACCEPTED, REJECTED_LOW, REJECTED_HIGH, REJECTED, RATE_LIMITED, ALREADY_COMPLETED, LOGIN_REQUIRED, SEASON_COMPLETE, UNKNOWN) with its verbatim wording. Use when the submitter or reviewer must re-confirm what the AoC server actually returned from a saved response page without re-submitting or trusting a paraphrase.
 ---
 
 # Skill: extract-aoc-verdict
@@ -32,26 +32,32 @@ deterministic verdict line that submit and review can quote identically.
 
    Output is two lines:
    - `verdict=<CLASS>` with `ACCEPTED`, `REJECTED_LOW`, `REJECTED_HIGH`,
-     `REJECTED`, `RATE_LIMITED`, `ALREADY_COMPLETED`, `LOGIN_REQUIRED`, or
-     `UNKNOWN`.
+     `REJECTED`, `RATE_LIMITED`, `ALREADY_COMPLETED`, `LOGIN_REQUIRED`,
+     `SEASON_COMPLETE`, or `UNKNOWN`.
    - `wording=<sentence containing the verdict phrase>` (verbatim, trimmed).
 3. Read the classification. Exit code 0 means a known class matched;
    exit 1 means `UNKNOWN` or an unreadable file; exit 2 means bad usage.
 4. Record the exact `verdict=` and `wording=` on the issue. Treat
    `ALREADY_COMPLETED` and `LOGIN_REQUIRED` as requiring reconciliation, not
-   as acceptance or rejection. `UNKNOWN` means the markup or wording changed;
-   do not assume.
+   as acceptance or rejection. `SEASON_COMPLETE` is the noncomputational
+   season-finale completion page ("You've finished every puzzle in Advent of
+   Code") and is authoritative evidence that every puzzle in the season is
+   finished; it carries no numeric answer. `UNKNOWN` means the markup or
+   wording changed; do not assume.
 
 ## Evidence and validation
 
 - Deterministic: the same file always yields the same verdict line. No
   network, no submission, read-only on the repository.
 - Fixtures under `fixtures/` cover accepted, rejected, too-high, too-low,
-  rate-limit, already-completed, login, recorded-answer, unknown, and garbage
-  pages; each produces the expected class (unknown/garbage exit 1).
-  `recorded-answer.html` models a puzzle-day page that records the accepted
-  answer (`Your puzzle answer was <code>...` + gold-star sentence), which is
-  the reconciliation case used when a re-POST returns "already completed".
+  rate-limit, already-completed, login, recorded-answer, season-complete,
+  unknown, and garbage pages; each produces the expected class (unknown/garbage
+  exit 1). `recorded-answer.html` models a puzzle-day page that records the
+  accepted answer (`Your puzzle answer was <code>...` + gold-star sentence),
+  which is the reconciliation case used when a re-POST returns "already
+  completed". `season-complete.html` models the season-finale completion
+  response (all stars collected, "You've finished every puzzle in Advent of
+  Code"); it is the noncomputational Day 12 part 2 finale case.
 - Re-run the deterministic harness before quoting a verdict or after editing
   the script/fixtures:
 

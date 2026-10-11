@@ -11,7 +11,7 @@ Usage:
   scripts/extract-aoc-verdict.py <verdict.html> [--verbose]
 
 Prints one line per verdict field to stdout:
-  verdict=<ACCEPTED|REJECTED_LOW|REJECTED_HIGH|REJECTED|RATE_LIMITED|ALREADY_COMPLETED|LOGIN_REQUIRED|UNKNOWN>
+  verdict=<ACCEPTED|REJECTED_LOW|REJECTED_HIGH|REJECTED|RATE_LIMITED|ALREADY_COMPLETED|LOGIN_REQUIRED|SEASON_COMPLETE|UNKNOWN>
   wording=<the verdict message text, newlines collapsed>
 
 Exit codes:
@@ -56,11 +56,17 @@ def classify(page_text):
 
     Order matters: 'That's the right answer' must be checked before any
     rejection phrasing, and a page recording the accepted answer
-    ('Your puzzle answer was') is itself acceptance evidence.
+    ('Your puzzle answer was') is itself acceptance evidence. A season
+    finale completion page ('You've finished every puzzle in Advent of
+    Code') is checked before generic rejection phrasing so the celebration
+    page is recognized as its own class.
     """
     patterns = [
         (r"That's the right answer", "ACCEPTED"),
         (r"Your puzzle answer was", "ACCEPTED"),
+        (r"finished every puzzle in Advent of Code", "SEASON_COMPLETE"),
+        (r"You've finished every puzzle", "SEASON_COMPLETE"),
+        (r"finished every puzzle", "SEASON_COMPLETE"),
         (r"Your answer is too low", "REJECTED_LOW"),
         (r"Your answer is too high", "REJECTED_HIGH"),
         (r"not the right answer", "REJECTED"),

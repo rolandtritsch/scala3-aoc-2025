@@ -21,8 +21,11 @@ scripts/extract-aoc-verdict.py <verdict.html>   # prints verdict=<CLASS> + wordi
 ```
 
 Returns `ACCEPTED`, `REJECTED_LOW`, `REJECTED_HIGH`, `REJECTED`, `RATE_LIMITED`,
-`ALREADY_COMPLETED`, `LOGIN_REQUIRED`, or `UNKNOWN` (unknown exits 1).
-Read-only; never submits. See `skills/extract-aoc-verdict/SKILL.md`.
+`ALREADY_COMPLETED`, `LOGIN_REQUIRED`, `SEASON_COMPLETE`, or `UNKNOWN`
+(unknown exits 1). `SEASON_COMPLETE` recognizes the noncomputational finale
+response ("You've finished every puzzle in Advent of Code") and is
+authoritative season-completion evidence. Read-only; never submits. See
+`skills/extract-aoc-verdict/SKILL.md`.
 
 After editing the script or its fixtures, re-run the deterministic validation
 harness (all fixtures + CLI failure cases, exit 0 on success):

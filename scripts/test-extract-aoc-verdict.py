@@ -33,6 +33,7 @@ EXPECTED = {
     "login.html": ("LOGIN_REQUIRED", 0),
     "rate-limit.html": ("RATE_LIMITED", 0),
     "rejected.html": ("REJECTED", 0),
+    "season-complete.html": ("SEASON_COMPLETE", 0),
     "too-high.html": ("REJECTED_HIGH", 0),
     "too-low.html": ("REJECTED_LOW", 0),
     "unknown.html": ("UNKNOWN", 1),
