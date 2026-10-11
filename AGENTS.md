@@ -144,6 +144,28 @@ mirroring `Day07.part2`, and a recursive memoized path-counting reference) on
 2000 generated grids and asserts the accepted Day 07 real-input answer
 29893386035180 and the official sample 40. See `skills/beam-splits/SKILL.md`.
 
+### Closest-pairs single-linkage clustering (connect K closest pairs, product of 3 largest circuits)
+
+For puzzles that connect the `K` closest pairs of points by straight-line
+distance and multiply the sizes of the three largest resulting circuits, where
+a pair already in the same circuit does nothing (e.g. Day 08 part 1 "Playground",
+junction boxes as `X,Y,Z` triples), cross-check deterministically:
+
+```bash
+python3 scripts/check-closest-pairs.py                            # self-test (random + sample 40 + real 90036)
+python3 scripts/check-closest-pairs.py inputs/Day08Test.txt 10 40
+python3 scripts/check-closest-pairs.py inputs/Day08.txt 1000 90036
+```
+
+Read-only; never submits. This is effectively Kruskal's algorithm over the
+sorted all-pairs edge list stopping after `K` edges; the self-test cross-checks
+two independent implementations (array-based union-find mirroring
+`Day08.part1`, and a small-to-large set-merging reference) on 2000 generated
+point sets and asserts the accepted Day 08 real-input answer 90036 and the
+official sample 40. The `inputs/...` path form resolves against
+`src/main/resources/inputs` from anywhere in the repo. See
+`skills/closest-pairs-clustering/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
