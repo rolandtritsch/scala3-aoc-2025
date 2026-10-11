@@ -61,6 +61,23 @@ python3 scripts/check-accessible-rolls.py inputs/Day04.txt 1356 8713
 Read-only; never submits. The self-test asserts the accepted Day 04 real-input
 answers (count 1356, peel 8713). See `skills/accessible-rolls/SKILL.md`.
 
+### Columnar worksheet arithmetic (numbers stacked under a bottom operator)
+
+For puzzles that lay math problems side by side in a wide horizontal grid where
+each problem's numbers sit one per line in a vertical strip with the operator
+(`+` or `*`) at the bottom of the strip, problems separated by a full column of
+spaces (e.g. Day 06 part 1 "trash compactor"), cross-check deterministically:
+
+```bash
+python3 scripts/check-worksheet-arithmetic.py                       # self-test (generated + sample 4277556 + real 6378679666679)
+python3 scripts/check-worksheet-arithmetic.py inputs/Day06.txt 6378679666679
+```
+
+Read-only; never submits. The self-tests assert the accepted Day 06 real-input
+answer 6378679666679 (1000 problems, grand total of per-problem folds) and
+cross-check two independent parsers against generated worksheets. See
+`skills/worksheet-arithmetic/SKILL.md`.
+
 ### Inclusive range coverage (count IDs in any range)
 
 For puzzles that count how many of a set of item IDs fall inside at least one
