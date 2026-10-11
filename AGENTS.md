@@ -166,6 +166,23 @@ official sample 40. The `inputs/...` path form resolves against
 `src/main/resources/inputs` from anywhere in the repo. See
 `skills/closest-pairs-clustering/SKILL.md`.
 
+For the full-merge variant (Day 08 part 2) — keep connecting the closest
+unconnected pairs until all boxes form a single circuit and multiply the X
+coordinates of the last two boxes connected (sample 25272, real 6083499488) —
+add `--full-merge`:
+
+```bash
+python3 scripts/check-closest-pairs.py --full-merge                # self-test (random + sample 25272 + real 6083499488)
+python3 scripts/check-closest-pairs.py --full-merge inputs/Day08Test.txt 25272
+python3 scripts/check-closest-pairs.py --full-merge inputs/Day08.txt 6083499488
+```
+
+Read-only; never submits. The `--full-merge` self-test cross-checks the
+part-2 union-find mirror (mirroring `Day08.part2`) and the set-merging
+reference on 2000 generated point sets and asserts the accepted Day 08
+real-input answer 6083499488 and the official sample 25272. See
+`skills/closest-pairs-clustering/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce

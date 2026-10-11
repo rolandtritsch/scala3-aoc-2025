@@ -2,33 +2,53 @@
 """check-closest-pairs.py - validate and apply the closest-pairs single-linkage
 clustering technique.
 
-Deterministic, read-only helper distilled from the Day 08 part 1 review. The
-technique (Day 08 "Playground"): given n junction boxes in 3D space (one
-`X,Y,Z` triple per line), repeatedly connect the closest pair of boxes by
-straight-line distance that are not yet directly connected; a pair whose boxes
-are already in the same circuit does nothing. After `k` such connections, the
-answer is the product of the sizes of the three largest circuits (minimally
-growing single-linkage clustering; effectively Kruskal's algorithm over the
-sorted all-pairs edge list, stopping after `k` edges).
+Deterministic, read-only helper distilled from the Day 08 review. The technique
+(Day 08 "Playground"): given n junction boxes in 3D space (one `X,Y,Z` triple
+per line), repeatedly connect the closest pair of boxes by straight-line
+distance that are not yet directly connected; a pair whose boxes are already in
+the same circuit does nothing. This is minimally growing single-linkage
+clustering; effectively Kruskal's algorithm over the sorted all-pairs edge list.
+
+Two variants are supported:
+  part 1 (k connections):     after `k` connections, the answer is the product
+                              of the sizes of the three largest circuits
+                              (stopping after `k` edges).
+  part 2 (--full-merge):      keep connecting until all boxes form a single
+                              circuit; the answer is the product of the X
+                              coordinates of the last two boxes connected (the
+                              final successful merge edge that completes the
+                              circuit).
 
 Modes:
-  no args / --self-test     Seeded random cross-check of the mirror (array-based
-                            union-find with path compression, mirroring
-                            `Day08.part1`) against an independent reference
-                            (small-to-large set merging with relabeling), then
-                            asserts the official Day 08 sample (10 connections ->
-                            40) and the accepted Day 08 part 1 real-input answer
-                            (1000 connections -> 90036).
+  no args / --self-test     Seeded random cross-check of the part-1 mirror
+                            (array-based union-find with path compression,
+                            mirroring `Day08.part1`) against an independent
+                            reference (small-to-large set merging with
+                            relabeling), then asserts the official Day 08 sample
+                            (10 connections -> 40) and the accepted Day 08 part 1
+                            real-input answer (1000 connections -> 90036).
+  --full-merge              Switch to the part-2 mode: cross-check the two
+                            full-merge implementations (the part-2 mirror
+                            mirroring `Day08.part2` and the set-merging
+                            reference), then assert the official sample (25272)
+                            and the accepted real-input answer (6083499488).
+                            Use it together with the self-test/file modes below.
   <FILE> <K> [EXPECTED]     Read junction boxes from FILE (one X,Y,Z triple per
                             line), process the K closest pairs, print the product
                             of the three largest circuit sizes, and assert it
                             when EXPECTED is given.
+  --full-merge <FILE> [EXPECTED]  Same, but connect until one circuit and print
+                            the product of the X coordinates of the last two
+                            boxes connected (asserting when EXPECTED is given).
 
 Usage:
   scripts/check-closest-pairs.py
   scripts/check-closest-pairs.py --self-test
   scripts/check-closest-pairs.py inputs/Day08Test.txt 10 40
   scripts/check-closest-pairs.py inputs/Day08.txt 1000 90036
+  scripts/check-closest-pairs.py --full-merge
+  scripts/check-closest-pairs.py --full-merge inputs/Day08Test.txt 25272
+  scripts/check-closest-pairs.py --full-merge inputs/Day08.txt 6083499488
 
 Exit codes:
   0  all checks passed
@@ -44,6 +64,8 @@ SAMPLE_CONNECTIONS = 10
 SAMPLE_ANSWER = 40
 REAL_CONNECTIONS = 1000
 REAL_ANSWER = 90036
+SAMPLE_FULL_MERGE_ANSWER = 25272
+REAL_FULL_MERGE_ANSWER = 6083499488
 
 
 def real_input_path():
@@ -177,6 +199,81 @@ def part1_reference(points, k):
     return product
 
 
+def part2_mirror(points):
+    """Array-based union-find with path compression, mirroring `Day08.part2`.
+
+    Consumes the sorted all-pairs edge list in ascending distance order, merging
+    with a union-find until a single successful merge unites every box into one
+    circuit. That final merge is the edge the Elves connect last, so the result
+    is the product of the X coordinates of its two endpoints. Returns 0 for a
+    single box (nothing to connect).
+    """
+    n = len(points)
+    parent = list(range(n))
+    size = [1] * n
+
+    def find(x):
+        root = x
+        while parent[root] != root:
+            root = parent[root]
+        while parent[x] != root:
+            nxt = parent[x]
+            parent[x] = root
+            x = nxt
+        return root
+
+    last_x = 0
+    connected = False
+    for dist, i, j in sorted_pairs(points):
+        if connected:
+            break
+        ra, rb = find(i), find(j)
+        if ra == rb:
+            continue
+        if size[ra] < size[rb]:
+            parent[ra] = rb
+            size[rb] += size[ra]
+            new_root = rb
+        else:
+            parent[rb] = ra
+            size[ra] += size[rb]
+            new_root = ra
+        last_x = points[i][0] * points[j][0]
+        connected = size[new_root] == n
+    return last_x
+
+
+def part2_reference(points):
+    """Independent part-2 reference: small-to-large set merging with relabeling.
+
+    Instead of parent pointers, each circuit is a Python set of indices and
+    every successful merge relabels the members of the smaller circuit into the
+    larger one. The product of the X coordinates is recorded for every successful
+    merge; the loop stops on the first merge whose merged set spans all boxes,
+    which is the same final edge the union-find mirror reports.
+    """
+    n = len(points)
+    sets = [frozenset([i]) for i in range(n)]
+    lookup = list(range(n))
+    last_x = 0
+    connected = False
+    for dist, i, j in sorted_pairs(points):
+        if connected:
+            break
+        si, sj = lookup[i], lookup[j]
+        if si == sj:
+            continue
+        a, b = (si, sj) if len(sets[si]) >= len(sets[sj]) else (sj, si)
+        merged = sets[a] | sets[b]
+        for member in sets[b]:
+            lookup[member] = a
+        sets[a] = merged
+        sets[b] = frozenset()
+        last_x = points[i][0] * points[j][0]
+        connected = len(merged) == n
+    return last_x
+
+
 def self_test():
     """Deterministic validation: seeded random cross-checks + official sample
     + the accepted Day 08 real-input answer (90036)."""
@@ -219,6 +316,47 @@ def self_test():
     return 0
 
 
+def self_test_full_merge():
+    """Deterministic part-2 validation: seeded random cross-checks of the two
+    full-merge implementations + official sample (25272) + the accepted Day 08
+    real-input answer (6083499488)."""
+    random.seed(20251011)
+
+    cases = 2000
+    for _ in range(cases):
+        n = random.randint(1, 12)
+        points = [(random.randint(0, 50), random.randint(0, 50), random.randint(0, 50))
+                  for _ in range(n)]
+        a = part2_mirror(points)
+        b = part2_reference(points)
+        if a != b:
+            print(f"FAIL: n={n} {points} -> mirror {a} != reference {b}",
+                  file=sys.stderr)
+            return 1
+
+    with open(sample_input_path(), "r", encoding="utf-8") as fh:
+        sample = parse_points(fh.read())
+    if part2_mirror(sample) != SAMPLE_FULL_MERGE_ANSWER:
+        print(f"FAIL: sample mirror != {SAMPLE_FULL_MERGE_ANSWER}", file=sys.stderr)
+        return 1
+    if part2_reference(sample) != SAMPLE_FULL_MERGE_ANSWER:
+        print(f"FAIL: sample reference != {SAMPLE_FULL_MERGE_ANSWER}", file=sys.stderr)
+        return 1
+
+    with open(real_input_path(), "r", encoding="utf-8") as fh:
+        real = parse_points(fh.read())
+    if part2_mirror(real) != REAL_FULL_MERGE_ANSWER:
+        print(f"FAIL: real mirror != {REAL_FULL_MERGE_ANSWER}", file=sys.stderr)
+        return 1
+    if part2_reference(real) != REAL_FULL_MERGE_ANSWER:
+        print(f"FAIL: real reference != {REAL_FULL_MERGE_ANSWER}", file=sys.stderr)
+        return 1
+
+    print(f"ok: {cases} random full-merge cross-checks, sample == "
+          f"{SAMPLE_FULL_MERGE_ANSWER}, real == {REAL_FULL_MERGE_ANSWER}")
+    return 0
+
+
 def repo_input_path(path):
     """Resolve a file-mode input path. Literal/existing paths are used as-is;
     an `inputs/...`-style path is resolved against the canonical
@@ -257,10 +395,41 @@ def file_mode(path, k, expected):
     return 0
 
 
+def file_mode_full_merge(path, expected):
+    path = repo_input_path(path)
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            points = parse_points(fh.read())
+    except (OSError, ValueError) as exc:
+        print(f"error: cannot read {path}: {exc}", file=sys.stderr)
+        return 1
+    mirror = part2_mirror(points)
+    reference = part2_reference(points)
+    print(f"points={len(points)} full_merge_x_product={mirror}")
+    if mirror != reference:
+        print(f"error: mirror {mirror} != reference {reference}", file=sys.stderr)
+        return 1
+    if expected is not None:
+        if mirror != expected:
+            print(f"error: expected {expected}, got {mirror}", file=sys.stderr)
+            return 1
+        print(f"ok: x_product == {expected}")
+    return 0
+
+
 def main(argv):
     args = argv[1:]
+    full_merge = "--full-merge" in args
+    args = [a for a in args if a != "--full-merge"]
     if not args or args == ["--self-test"]:
-        return self_test()
+        return self_test_full_merge() if full_merge else self_test()
+    if full_merge:
+        if len(args) not in (1, 2):
+            print("usage: scripts/check-closest-pairs.py --full-merge "
+                  "[FILE [EXPECTED]]", file=sys.stderr)
+            return 2
+        expected = int(args[1]) if len(args) >= 2 else None
+        return file_mode_full_merge(args[0], expected)
     if len(args) not in (2, 3):
         print("usage: scripts/check-closest-pairs.py [FILE K [EXPECTED]]",
               file=sys.stderr)
