@@ -66,16 +66,23 @@ answers (count 1356, peel 8713). See `skills/accessible-rolls/SKILL.md`.
 For puzzles that lay math problems side by side in a wide horizontal grid where
 each problem's numbers sit one per line in a vertical strip with the operator
 (`+` or `*`) at the bottom of the strip, problems separated by a full column of
-spaces (e.g. Day 06 part 1 "trash compactor"), cross-check deterministically:
+spaces (e.g. Day 06 "trash compactor"), cross-check deterministically. Two
+readings are supported: part 1 reads each number as the token on its own number
+line left-to-right; part 2 reads each number as a single column of stacked
+digits (most significant at top, least significant at bottom), columns
+right-to-left within a problem and problems emitted right-to-left:
 
 ```bash
-python3 scripts/check-worksheet-arithmetic.py                       # self-test (generated + sample 4277556 + real 6378679666679)
+python3 scripts/check-worksheet-arithmetic.py                         # part-1 self-test (generated + sample 4277556 + real 6378679666679)
 python3 scripts/check-worksheet-arithmetic.py inputs/Day06.txt 6378679666679
+python3 scripts/check-worksheet-arithmetic.py --part2                 # part-2 self-test (generated + sample 3263827 + real 11494432585168)
+python3 scripts/check-worksheet-arithmetic.py --part2 inputs/Day06.txt 11494432585168
 ```
 
 Read-only; never submits. The self-tests assert the accepted Day 06 real-input
-answer 6378679666679 (1000 problems, grand total of per-problem folds) and
-cross-check two independent parsers against generated worksheets. See
+answers (6378679666679 part 1 and 11494432585168 part 2, 1000 problems each,
+grand total of per-problem folds) and cross-check two independent parsers per
+reading against generated worksheets. See
 `skills/worksheet-arithmetic/SKILL.md`.
 
 ### Inclusive range coverage (count IDs in any range)
