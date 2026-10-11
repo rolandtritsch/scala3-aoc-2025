@@ -183,6 +183,30 @@ reference on 2000 generated point sets and asserts the accepted Day 08
 real-input answer 6083499488 and the official sample 25272. See
 `skills/closest-pairs-clustering/SKILL.md`.
 
+### Largest axis-aligned rectangle between two red-tile diagonal corners (inclusive spans)
+
+For puzzles that find the largest axis-aligned rectangle whose opposite
+(diagonal) corners are two of a set of marked grid tiles, where the rectangle
+edges run along grid lines so the width/height are the inclusive spans
+`(|dx|+1)`/`(|dy|+1)` and the area is their product (e.g. Day 09 part 1 "Movie
+Theater"), cross-check deterministically:
+
+```bash
+python3 scripts/check-red-rectangles.py                    # self-test (random + sample 50 + real 4777967538)
+python3 scripts/check-red-rectangles.py inputs/Day09Test.txt 50
+python3 scripts/check-red-rectangles.py inputs/Day09.txt 4777967538
+```
+
+Read-only; never submits. The self-test cross-checks two independent
+implementations (an index-based pair scan mirroring `Day09.part1` with
+`abs(...) + 1` spans, and a functional `combinations` reference with
+`max - min + 1` spans) on 5000 generated tile sets and asserts the accepted
+Day 09 real-input answer 4777967538 and the official sample 50 (best pair
+(11,1)-(2,5)); file mode also prints the best corner pair (real input:
+(83050,86053)-(14405,16451)). The `inputs/...` path form resolves against
+`src/main/resources/inputs` from anywhere in the repo. See
+`skills/red-rectangles/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
