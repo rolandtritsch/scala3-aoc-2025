@@ -110,6 +110,25 @@ answers 848 (covered count, 182 ranges vs 1000 IDs) and 334714395325710 (union
 count, 83 merged spans) and cross-check a direct scan against a merged-interval
 reference. See `skills/range-coverage/SKILL.md`.
 
+### Vertical beam splitting (single downward ray that splits at `^` markers)
+
+For puzzles where a beam enters a grid at `S` on the top row and moves only
+downward, passes through `.`, is stopped by a `^` splitter and re-emitted into
+the cells immediately left and right of it, with beams that merge into the same
+cell deduplicated (e.g. Day 07 part 1 "tachyon manifold"), cross-check
+deterministically:
+
+```bash
+python3 scripts/check-beam-splits.py                         # self-test (random + sample 21 + real 1605)
+python3 scripts/check-beam-splits.py inputs/Day07.txt 1605
+```
+
+Read-only; never submits. The self-test cross-checks two independent
+implementations (row-by-row active-column set mirroring `Day07.part1`, and a
+BFS over occupied cells that visits each merged cell once) on 2000 generated
+grids and asserts the accepted Day 07 real-input answer 1605 and the official
+sample 21. See `skills/beam-splits/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
