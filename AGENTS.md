@@ -61,6 +61,21 @@ python3 scripts/check-accessible-rolls.py inputs/Day04.txt 1356 8713
 Read-only; never submits. The self-test asserts the accepted Day 04 real-input
 answers (count 1356, peel 8713). See `skills/accessible-rolls/SKILL.md`.
 
+### Inclusive range coverage (count IDs in any range)
+
+For puzzles that count how many of a set of item IDs fall inside at least one
+inclusive `first-last` range, where ranges may overlap (e.g. Day 05 part 1
+"cafeteria fresh ingredient IDs"), cross-check deterministically:
+
+```bash
+python3 scripts/check-range-coverage.py                            # self-test (random + sample 3 + real 848)
+python3 scripts/check-range-coverage.py inputs/Day05.txt 848
+```
+
+Read-only; never submits. The self-test asserts the accepted Day 05 real-input
+answer 848 and cross-checks a direct scan against a merged-interval reference.
+See `skills/range-coverage/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
