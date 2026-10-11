@@ -67,8 +67,53 @@ object Day07:
             next += column - 1
             next += column + 1
           case _ => next += column
+      end for
       active = next.filter(column => column >= 0 && column < width)
+    end for
     splits
   end part1
+
+  /** Count how many distinct timelines a single quantum tachyon particle ends up on.
+    *
+    * Under the many-worlds interpretation, a single particle takes both the left and right path of
+    * every splitter it reaches, so each splitter doubles the number of timelines. Unlike part 1,
+    * timelines that converge on the same cell are never deduplicated: two different decision
+    * sequences ending at the same position are two distinct timelines. The particle always moves
+    * one row downward, carrying its cell unchanged through `.`/`S`, and branching into cells
+    * `column - 1` and `column + 1` at a `^`. A branch emitted outside the grid exits the manifold,
+    * ending that timeline; every timeline that survives to the bottom row also exits there.
+    *
+    * Each column carries a multiplicity counting the distinct timelines currently at that cell.
+    * This is a top-down propagation O(h * w) in time and O(w) in space (the per-column counts can
+    * grow combinatorially, so they are tracked as `Long`).
+    *
+    * @param grid
+    *   the manifold diagram
+    * @return
+    *   the number of distinct timelines the particle ends up on
+    */
+  def part2(grid: Vector[String]): Long =
+    require(grid.nonEmpty, "grid.nonEmpty")
+    require(grid.map(_.length).distinct.size == 1, "all rows must have equal width")
+    logger.debug(s"grid: ${grid.size} rows x ${grid.head.length} cols")
+
+    val width = grid.head.length
+    val start = grid.head.indexOf('S')
+    require(start >= 0, "grid must contain a start cell 'S'")
+
+    var counts: Map[Int, Long] = Map(start -> 1L)
+    var exited = 0L
+    for row <- grid do
+      var next = Map.empty[Int, Long]
+      for (col, multiplicity) <- counts do
+        val targets = if row(col) == '^' then Seq(col - 1, col + 1) else Seq(col)
+        for target <- targets do
+          if target < 0 || target >= width then exited += multiplicity
+          else next = next.updated(target, multiplicity + next.getOrElse(target, 0L))
+      end for
+      counts = next
+    end for
+    exited + counts.values.sum
+  end part2
 
 end Day07
