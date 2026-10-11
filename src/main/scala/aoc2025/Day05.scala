@@ -91,4 +91,46 @@ object Day05:
     database.available.count(id => isFresh(id, database.ranges))
   end part1
 
+  /** Merge overlapping or adjacent inclusive ranges into disjoint ranges.
+    *
+    * Two ranges are merged when the next range's first ID is no greater than the current range's
+    * last ID plus one, i.e. they overlap or touch end-to-end, so no ID in the union is missed or
+    * counted twice. The ranges are first sorted by their first ID, so the prefix currently being
+    * extended is always the rightmost one. This is O(r log r) time for `r` ranges (dominated by the
+    * sort) and O(r) space.
+    *
+    * @param ranges
+    *   the fresh-ingredient ranges
+    * @return
+    *   the disjoint merged ranges in ascending first-ID order
+    */
+  def mergedRanges(ranges: Seq[IdRange]): Seq[IdRange] =
+    val sorted = ranges.sortBy(r => (r.first, r.last))
+    sorted.foldLeft(List.empty[IdRange]): (acc, r) =>
+      acc match
+        case cur :: rest if r.first <= cur.last + 1 =>
+          IdRange(cur.first, math.max(cur.last, r.last)) :: rest
+        case _ => r :: acc
+    .reverse
+  end mergedRanges
+
+  /** Count how many ingredient IDs the fresh ranges consider fresh, ignoring the available list.
+    *
+    * Because the ranges may overlap, the ranges are first merged via [[mergedRanges]] and the
+    * result is the sum of the sizes (`last - first + 1`) of the disjoint ranges. The available IDs
+    * are intentionally ignored. This is O(r log r) time for `r` ranges and O(r) space. The count is
+    * returned as a Long because the union of 64-bit inclusive ranges can exceed Int.MaxValue.
+    *
+    * @param database
+    *   the parsed database
+    * @return
+    *   the total number of ingredient IDs considered fresh
+    */
+  def part2(database: Database): Long =
+    require(database.ranges.nonEmpty, "database.ranges.nonEmpty")
+    logger.debug(s"ranges: ${database.ranges.size}")
+
+    mergedRanges(database.ranges).foldLeft(0L)((sum, r) => sum + (r.last - r.first + 1))
+  end part2
+
 end Day05
