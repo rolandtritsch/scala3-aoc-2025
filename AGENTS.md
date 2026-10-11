@@ -249,6 +249,28 @@ BFS over the XOR light-pattern state graph) on 2000 generated machines and
 asserts the accepted Day 10 real-input answer 417, the official sample 7, and
 the per-machine minima `[2, 3, 2]`. See `skills/toggle-presses/SKILL.md`.
 
+### Additive joltage counters (min presses to exact additive targets)
+
+For puzzles where each button increments a listed subset of numeric counters by
+1 per press and the answer is the fewest total presses to drive every counter
+to an exact target joltage, i.e. the minimum-weight non-negative integer
+solution of the 0/1 linear system `A x = b` (e.g. Day 10 part 2 "Factory",
+joltage requirements), cross-check deterministically. Each line is
+`[######] (btn ids) ... {joltage targets}`:
+
+```bash
+python3 scripts/check-joltage-counters.py                # self-test (random + sample 33 + real 16765)
+python3 scripts/check-joltage-counters.py inputs/Day10Test.txt 33
+python3 scripts/check-joltage-counters.py inputs/Day10.txt 16765
+```
+
+Read-only; never submits. The self-test cross-checks the exact
+branch-and-bound over the rational LP relaxation (mirroring `Day10.part2` /
+`CounterSolver`) against an independent exhaustive brute force on 1700
+generated machines and asserts the accepted Day 10 real-input answer 16765,
+the official sample 33, and the per-machine minima `[10, 12, 11]`. See
+`skills/joltage-counters/SKILL.md`.
+
 ### Verify a committed day solution
 
 Before a submit or review disposition for day NN part 1 and/or part 2, reproduce
