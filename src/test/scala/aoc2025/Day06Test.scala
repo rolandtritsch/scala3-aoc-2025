@@ -43,4 +43,27 @@ class Day06Test extends munit.FunSuite:
   test("Day06 - part1 - real"):
     assertEquals(part1(readFile("inputs/Day06.txt")), 6378679666679L)
 
+  test("Day06 - readFilePart2 - sample"):
+    assertEquals(
+      readFilePart2("inputs/Day06Test.txt"),
+      Seq(
+        Problem('+', Seq(4L, 431L, 623L)),
+        Problem('*', Seq(175L, 581L, 32L)),
+        Problem('+', Seq(8L, 248L, 369L)),
+        Problem('*', Seq(356L, 24L, 1L)),
+      ),
+    )
+
+  test("Day06 - readFilePart2 - real"):
+    val problems = readFilePart2("inputs/Day06.txt")
+    assertEquals(problems.size, 1000)
+    assert(problems.forall(p => p.operator == '+' || p.operator == '*'))
+    assert(problems.forall(_.numbers.nonEmpty))
+
+  test("Day06 - part2 - sample"):
+    assertEquals(part2(readFilePart2("inputs/Day06Test.txt")), 3263827L)
+
+  test("Day06 - part2 - real"):
+    assertEquals(part2(readFilePart2("inputs/Day06.txt")), 11494432585168L)
+
 end Day06Test
