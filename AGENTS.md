@@ -277,7 +277,7 @@ For puzzles where each line lists a node followed by the nodes its outputs
 attach to (`node: out1 out2 ...`), data flows only forward through outputs so
 the graph is a directed acyclic graph, and the answer is the number of distinct
 directed paths from a source device (e.g. `you`) to a target device (e.g.
-`out`) — e.g. Day 11 part 1 "Reactor" — cross-check deterministically:
+`out`) — e.g. Day 11 "Reactor" — cross-check deterministically:
 
 ```bash
 python3 scripts/check-dag-paths.py                 # self-test (random + sample 5 + real 543)
@@ -291,6 +291,23 @@ explicit path-enumeration reference) on 4000 seeded random acyclic wirings
 (3–12 devices, `you` first / `out` last) and asserts the accepted Day 11
 real-input answer 543 and the official sample 5 (10 devices). It also covers
 the unreachable-source case (both implementations count 0). See
+`skills/dag-paths/SKILL.md`.
+
+For the visits-all variant (Day 11 part 2) — count only the `svr -> out` paths
+that visit BOTH required devices `dac` and `fft` in any order (sample 2, real
+479511112939968) — add `--visits-all`:
+
+```bash
+python3 scripts/check-dag-paths.py --visits-all     # self-test (random + sample 2 + real 479511112939968)
+python3 scripts/check-dag-paths.py --visits-all inputs/Day11.txt 479511112939968
+```
+
+Read-only; never submits. The `--visits-all` self-test cross-checks two
+independent implementations (a subset-mask DFS mirroring `Day11.part2`, and an
+inclusion-exclusion reference that prunes required devices and counts plain
+paths) on 3000 seeded random acyclic wirings (4–12 devices, `svr` first /
+`out` last) and asserts the accepted Day 11 real-input answer 479511112939968
+and the official part-2 sample 2 (13 devices). See
 `skills/dag-paths/SKILL.md`.
 
 ### Verify a committed day solution

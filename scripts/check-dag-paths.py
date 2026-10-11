@@ -26,11 +26,22 @@ Modes:
                             distinct paths from `you` to `out`, and assert it
                             when EXPECTED is given.
 
+Part-two variant (--visits-all): count only the paths from `svr` to `out`
+that visit BOTH required devices `dac` and `fft` (in any order), mirroring
+`Day11.part2`. Two independent implementations are used: a memoised
+subset-mask DFS (the Scala mirror) and an inclusion-exclusion reference
+built from part-one path counts with the required devices pruned out.
+The self-test cross-checks them on seeded random wirings and asserts the
+official part-two sample (2) and the accepted Day 11 part 2 real-input
+answer (479511112939968).
+
 Usage:
   scripts/check-dag-paths.py
   scripts/check-dag-paths.py --self-test
   scripts/check-dag-paths.py inputs/Day11Test.txt 5
   scripts/check-dag-paths.py inputs/Day11.txt 543
+  scripts/check-dag-paths.py --visits-all
+  scripts/check-dag-paths.py --visits-all inputs/Day11.txt 479511112939968
 
 Exit codes:
   0  all checks passed
@@ -47,6 +58,29 @@ SAMPLE_ANSWER = 5
 REAL_ANSWER = 543
 SOURCE = "you"
 TARGET = "out"
+
+# Part-two variant: every counted path must visit both of these devices.
+PART2_SOURCE = "svr"
+PART2_REQUIRED = ("dac", "fft")
+PART2_SAMPLE_ANSWER = 2
+PART2_REAL_ANSWER = 479511112939968
+
+# The part-two official sample (13 devices), embedded so the self-test can
+# assert it without a committed sample file.
+PART2_SAMPLE_TEXT = """svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out
+"""
 
 
 def real_input_path():
@@ -147,6 +181,113 @@ def count_paths_enum(wiring, source=SOURCE, target=TARGET):
     return count
 
 
+def count_required_memo(wiring, source=PART2_SOURCE, target=TARGET,
+                        required=PART2_REQUIRED):
+    """Memoised subset-mask DFS mirroring `Day11.part2`: count paths from
+    `source` to `target` that visit every device in `required` (in any order).
+    Each required device owns a bit; a path is counted only at `target` when
+    all bits are set. Memoised on (device, visitedMask), O(v * 2^k + e * 2^k)
+    where k is the number of required devices."""
+    required_mask = {name: 1 << i for i, name in enumerate(required)}
+    required_full = (1 << len(required)) - 1
+    memo = {}
+
+    def visit(device, visited):
+        key = (device, visited)
+        if key in memo:
+            return memo[key]
+        if device == target:
+            memo[key] = 1 if visited == required_full else 0
+        else:
+            next_visited = visited | required_mask.get(device, 0)
+            memo[key] = sum(visit(out, next_visited)
+                            for out in wiring.get(device, ()))
+        return memo[key]
+
+    return visit(source, 0) if source in wiring else 0
+
+
+def count_required_ie(wiring, source=PART2_SOURCE, target=TARGET,
+                      required=PART2_REQUIRED):
+    """Independent inclusion-exclusion reference for the part-two count.
+
+    The number of paths visiting every required device equals
+    sum_{S subset of required} (-1)^|S| * (paths avoiding all of S), where
+    "paths avoiding a set" is computed by pruning those devices out of the
+    graph and counting plain paths (count_paths_memo). This is structurally
+    different from the subset-mask DFS, so agreement catches mask/bit bugs.
+    """
+    total = 0
+    for bits in range(1 << len(required)):
+        avoid = {name for i, name in enumerate(required) if bits & (1 << i)}
+        pruned = {d: [o for o in outs if o not in avoid]
+                  for d, outs in wiring.items() if d not in avoid}
+        count = count_paths_memo(pruned, source, target)
+        if len(avoid) % 2 == 0:
+            total += count
+        else:
+            total -= count
+    return total
+
+
+def random_wiring_with_required(rng):
+    """Build a random acyclic wiring that contains the part-two source,
+    target and required devices. Devices are laid out in a fixed total order
+    (source, required devices, extras, target) and edges only go from an
+    earlier device to a later one, guaranteeing acyclicity. The target is
+    last so the required devices genuinely lie on paths to it; some random
+    cases have no valid path and some do."""
+    n = rng.randint(4, 12)
+    extras = [f"e{i}" for i in range(n - 2 - len(PART2_REQUIRED))]
+    devices = [PART2_SOURCE] + list(PART2_REQUIRED) + extras + [TARGET]
+    wiring = {d: [] for d in devices}
+    for i in range(len(devices)):
+        for j in range(i + 1, len(devices)):
+            if rng.random() < 0.30:
+                wiring[devices[i]].append(devices[j])
+    return wiring
+
+
+def self_test_visits_all():
+    """Deterministic validation of the part-two variant: seeded random
+    cross-checks of the subset-mask DFS mirror against the inclusion-exclusion
+    reference, plus the official part-two sample (2) and the accepted part-two
+    real-input answer (479511112939968)."""
+    rng = random.Random(20261011)
+
+    cases = 3000
+    for _ in range(cases):
+        wiring = random_wiring_with_required(rng)
+        a = count_required_memo(wiring)
+        b = count_required_ie(wiring)
+        if a != b:
+            print(f"FAIL: wiring={wiring} -> memo {a} != IE {b}",
+                  file=sys.stderr)
+            return 1
+
+    sample = parse_wiring(PART2_SAMPLE_TEXT)
+    assert len(sample) == 13, f"part2 sample should have 13 devices, got {len(sample)}"
+    sample_memo = count_required_memo(sample)
+    sample_ie = count_required_ie(sample)
+    if sample_memo != PART2_SAMPLE_ANSWER or sample_ie != PART2_SAMPLE_ANSWER:
+        print(f"FAIL: part2 sample memo {sample_memo} / IE {sample_ie} "
+              f"!= {PART2_SAMPLE_ANSWER}", file=sys.stderr)
+        return 1
+
+    with open(real_input_path(), "r", encoding="utf-8") as fh:
+        real = parse_wiring(fh.read())
+    real_memo = count_required_memo(real)
+    real_ie = count_required_ie(real)
+    if real_memo != PART2_REAL_ANSWER or real_ie != PART2_REAL_ANSWER:
+        print(f"FAIL: real memo {real_memo} / IE {real_ie} "
+              f"!= {PART2_REAL_ANSWER}", file=sys.stderr)
+        return 1
+
+    print(f"ok: {cases} memo/IE cross-checks, part2 sample == {PART2_SAMPLE_ANSWER}, "
+          f"real == {PART2_REAL_ANSWER}")
+    return 0
+
+
 def random_wiring(rng):
     """Build a random acyclic wiring. Acyclicity is guaranteed by laying out
     `n` devices in a fixed total order and only allowing edges from an earlier
@@ -202,7 +343,7 @@ def self_test():
     return 0
 
 
-def file_mode(path, expected):
+def file_mode(path, expected, visits_all=False):
     path = repo_input_path(path)
     try:
         with open(path, "r", encoding="utf-8") as fh:
@@ -210,28 +351,37 @@ def file_mode(path, expected):
     except (OSError, ValueError) as exc:
         print(f"error: cannot read {path}: {exc}", file=sys.stderr)
         return 1
-    total = count_paths_memo(wiring)
-    print(f"devices={len(wiring)} paths={total}")
+    if visits_all:
+        total = count_required_memo(wiring)
+        print(f"devices={len(wiring)} required_paths={total}")
+        label = "required_paths"
+    else:
+        total = count_paths_memo(wiring)
+        print(f"devices={len(wiring)} paths={total}")
+        label = "paths"
     if expected is not None:
         if total != expected:
             print(f"error: expected {expected}, got {total}", file=sys.stderr)
             return 1
-        print(f"ok: paths == {expected}")
+        print(f"ok: {label} == {expected}")
     return 0
 
 
 def main(argv):
     args = argv[1:]
     want_self_test = "--self-test" in args
-    args = [a for a in args if a != "--self-test"]
-    if want_self_test or not args:
+    visits_all = "--visits-all" in args
+    args = [a for a in args if a not in ("--self-test", "--visits-all")]
+    if (want_self_test or not args) and not visits_all:
         return self_test()
+    if (want_self_test or not args) and visits_all:
+        return self_test_visits_all()
     if len(args) not in (1, 2):
-        print("usage: scripts/check-dag-paths.py [FILE [EXPECTED]]",
+        print("usage: scripts/check-dag-paths.py [--visits-all] [FILE [EXPECTED]]",
               file=sys.stderr)
         return 2
     expected = int(args[1]) if len(args) >= 2 else None
-    return file_mode(args[0], expected)
+    return file_mode(args[0], expected, visits_all=visits_all)
 
 
 if __name__ == "__main__":
