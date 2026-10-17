@@ -1,7 +1,8 @@
 package aoc2025
 
-import com.typesafe.scalalogging.Logger
 import scala.io.Source
+
+import com.typesafe.scalalogging.Logger
 
 /** Day01 - Secret Entrance.
   *

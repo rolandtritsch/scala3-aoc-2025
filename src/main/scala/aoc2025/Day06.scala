@@ -1,7 +1,8 @@
 package aoc2025
 
-import com.typesafe.scalalogging.Logger
 import scala.io.Source
+
+import com.typesafe.scalalogging.Logger
 
 /** Day06 - Trash Compactor.
   *
@@ -72,7 +73,7 @@ object Day06:
 
         val numbers = numberRows.flatMap: row =>
           val token = row.substring(start, end + 1).trim
-          if token.nonEmpty then Some(token.toLong) else None
+          Option.when(token.nonEmpty)(token.toLong)
 
         problems += Problem(operator, numbers)
       end if

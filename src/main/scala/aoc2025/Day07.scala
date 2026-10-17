@@ -1,7 +1,8 @@
 package aoc2025
 
-import com.typesafe.scalalogging.Logger
 import scala.io.Source
+
+import com.typesafe.scalalogging.Logger
 
 /** Day07 - Laboratories (tachyon manifold).
   *
@@ -49,7 +50,7 @@ object Day07:
     */
   def part1(grid: Vector[String]): Int =
     require(grid.nonEmpty, "grid.nonEmpty")
-    require(grid.map(_.length).distinct.size == 1, "all rows must have equal width")
+    require(grid.distinctBy(_.length).size == 1, "all rows must have equal width")
     logger.debug(s"grid: ${grid.size} rows x ${grid.head.length} cols")
 
     val width = grid.head.length
@@ -94,7 +95,7 @@ object Day07:
     */
   def part2(grid: Vector[String]): Long =
     require(grid.nonEmpty, "grid.nonEmpty")
-    require(grid.map(_.length).distinct.size == 1, "all rows must have equal width")
+    require(grid.distinctBy(_.length).size == 1, "all rows must have equal width")
     logger.debug(s"grid: ${grid.size} rows x ${grid.head.length} cols")
 
     val width = grid.head.length

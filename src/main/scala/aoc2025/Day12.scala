@@ -1,9 +1,9 @@
 package aoc2025
 
-import com.typesafe.scalalogging.Logger
-
 import scala.collection.mutable
 import scala.io.Source
+
+import com.typesafe.scalalogging.Logger
 
 /** Day12 - Christmas Tree Farm (packing presents into the regions under trees).
   *
@@ -75,7 +75,7 @@ object Day12:
         require(diagram.size == 3, s"expected a 3-row diagram after '${lines(i)}'")
         parseShape(diagram)
 
-    val regions = lines.filter(_.matches("[0-9]+x[0-9]+:.*")).map(parseRegion)
+    val regions = lines.withFilter(_.matches("[0-9]+x[0-9]+:.*")).map(parseRegion)
     Input(shapes, regions)
   end readFile
 
@@ -93,7 +93,7 @@ object Day12:
     require(dims.length == 2, s"expected a 'WxH:' region: $line")
     val width = dims(0).toInt
     val height = dims(1).toInt
-    val quantities = line.dropWhile(_ != ':').drop(1).trim.split("\\s+").filter(_.nonEmpty)
+    val quantities = line.dropWhile(_ != ':').drop(1).trim.split("\\s+").withFilter(_.nonEmpty)
       .map(_.toInt).toVector
     Region(width, height, quantities)
   end parseRegion

@@ -1,7 +1,8 @@
 package aoc2025
 
-import com.typesafe.scalalogging.Logger
 import scala.io.Source
+
+import com.typesafe.scalalogging.Logger
 
 /** Day10 - Factory (indicator lights, button wiring, and joltage counters).
   *
@@ -85,7 +86,7 @@ object Day10:
         if line(i) == '(' then
           val close = line.indexOf(')', i)
           require(close > i, s"unterminated button in: $line")
-          val ids = line.substring(i + 1, close).split(',').filter(_.nonEmpty).map(_.toInt)
+          val ids = line.substring(i + 1, close).split(',').withFilter(_.nonEmpty).map(_.toInt)
           var mask = 0
           for id <- ids do mask ^= 1 << id
           buttons += mask
@@ -93,7 +94,7 @@ object Day10:
         else if line(i) == '{' then
           val close = line.indexOf('}', i)
           require(close > i, s"unterminated joltages in: $line")
-          for tok <- line.substring(i + 1, close).split(',').filter(_.nonEmpty).map(_.toInt) do
+          for tok <- line.substring(i + 1, close).split(',').withFilter(_.nonEmpty).map(_.toInt) do
             joltages += tok
           i = close + 1
         else i += 1
@@ -367,7 +368,7 @@ private object CounterSolver:
     val m2 = live.length
     val tabled: Array[Array[R]] = live.toArray.map: i =>
       Array.tabulate(n + 1)(k => if k < n then rows(i)(k) else rows(i)(N))
-    val basis2: Array[Int] = live.toArray.map(i => basis(i))
+    val basis2: Array[Int] = live.toArray.map(basis)
 
     val red2: Array[R] = Array.fill(n + 1)(R.zero)
     var j = 0

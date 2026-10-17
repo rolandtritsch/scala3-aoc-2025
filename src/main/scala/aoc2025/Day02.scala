@@ -1,7 +1,8 @@
 package aoc2025
 
-import com.typesafe.scalalogging.Logger
 import scala.io.Source
+
+import com.typesafe.scalalogging.Logger
 
 /** Day02 - Gift Shop.
   *
@@ -36,7 +37,7 @@ object Day02:
 
     val source = Source.fromResource(filename)
     try source.getLines().toSeq.flatMap: line =>
-        line.trim.split(",").filter(_.nonEmpty).map: token =>
+        line.trim.split(",").withFilter(_.nonEmpty).map: token =>
           val dash = token.indexOf('-')
           require(dash > 0, s"invalid range (missing '-'): $token")
           val first = token.substring(0, dash).trim.toLong

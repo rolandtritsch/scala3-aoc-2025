@@ -1,7 +1,8 @@
 package aoc2025
 
-import com.typesafe.scalalogging.Logger
 import scala.io.Source
+
+import com.typesafe.scalalogging.Logger
 
 /** Day05 - Cafeteria.
   *
@@ -50,7 +51,7 @@ object Day05:
       require(dash > 0, s"invalid range (missing '-'): $line")
       IdRange(line.substring(0, dash).toLong, line.substring(dash + 1).toLong)
 
-    val available = lines.drop(separator + 1).filter(_.nonEmpty).map(_.toLong)
+    val available = lines.drop(separator + 1).withFilter(_.nonEmpty).map(_.toLong)
     Database(ranges, available)
   end readFile
 
